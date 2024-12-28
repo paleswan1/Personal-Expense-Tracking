@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Blazored.LocalStorage;
+using Microsoft.Extensions.Logging;
 
 namespace PersonalExpenseTracker
 {
@@ -16,8 +17,10 @@ namespace PersonalExpenseTracker
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddBlazoredLocalStorage();
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 
