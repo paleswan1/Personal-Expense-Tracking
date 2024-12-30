@@ -1,4 +1,4 @@
-﻿namespace PersonalExpenseTracker.DTOs.Tags;
+﻿enamespace PersonalExpenseTracker.DTOs.Tags;
 
 public class GetTagDto
 {

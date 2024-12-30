@@ -2,7 +2,7 @@
 
 namespace PersonalExpenseTracker.DTOs.Transaction;
 
-public class InsertTransactionDto
+public class GetTransactionDto
 {
     public string Title { get; set; }
 
@@ -13,5 +13,5 @@ public class InsertTransactionDto
     public TransactionSource Source { get; set; }
 
     public int Amount { get; set; }
-}
 
+}

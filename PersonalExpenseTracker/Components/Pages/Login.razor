@@ -1,7 +1,5 @@
 ﻿@page "/"
-@using Blazored.LocalStorage
-@inject ILocalStorageService LocalStorage
-@inject NavigationManager Navigation
+@layout Empty   
 
 <h3>Login</h3>
 
@@ -19,25 +17,7 @@
     <input id="password" @bind="password" type="password" />
 </div>
 <div>
-    <button @onclick="Login">Login</button>
+    <button @onclick="LoginHandler">Login</button>
 </div>
 
-@code {
-    private string username = "";
-    private string password = "";
-    private string errorMessage = "";
 
-    private async Task Logins()
-    {
-        // Mock validation (replace with real authentication logic)
-        if (username == "user" && password == "password")
-        {
-            await LocalStorage.SetItemAsStringAsync("authToken", "exampleAuthToken123");
-            Navigation.NavigateTo("/home");
-        }
-        else
-        {
-            errorMessage = "Invalid username or password.";
-        }
-    }
-}

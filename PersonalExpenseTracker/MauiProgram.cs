@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.Extensions.Logging;
+using MudBlazor.Services;
 
 namespace PersonalExpenseTracker
 {
@@ -22,6 +23,8 @@ namespace PersonalExpenseTracker
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
+
+            builder.Services.AddMudServices();
 #endif
 
             return builder.Build();

@@ -19,3 +19,12 @@ public enum TransactionSource
 
 }
 
+public enum currency
+{
+    None = 0,
+    NPR= 1,
+    INR=2,
+    USD = 3,
+    DHR = 4,
+}
+
