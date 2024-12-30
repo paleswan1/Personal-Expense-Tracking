@@ -90,12 +90,47 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
     public void UpdateTrasaction(UpdateTransactionDto transaction)
     {
-        throw new NotImplementedException();
+        var userDetails = userService.GetUserDetails();
+
+        if (userDetails == null)
+        {
+            throw new Exception("You are not logged in.");
+        }
+
+        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+
+        var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
+
+        if (transactionModel == null)
+        {
+            throw new Exception("A transaction with the following identifier couldn't be found.");
+        }
+
+        transactionModel.Amount = transaction.Amount;
+        transactionModel.Note = transaction.Note;
+        transactionModel.Type = transaction.Type;   
+        transactionModel.Source = transaction.Source;   
+        transactionModel.Amount = transaction.Amount;
+        transactionModel.LastModifiedBy = userDetails.Id;
+        transactionModel.LastModifiedAt = DateTime.Now;
+
+        genericRepository.SaveAll(transactions, appDataDirectoryPath, appTransactionsFilePath);
     }
 
     public void ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction)
     {
-        throw new NotImplementedException();
+        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+
+        var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
+
+        if (transactionModel == null)
+        {
+            throw new Exception("A transaction with the following identifier couldn't be found.");
+        }
+
+        transactions.Remove(transactionModel);
+
+        genericRepository.SaveAll(transactions, appDataDirectoryPath, appTransactionsFilePath);
     }
 
 }

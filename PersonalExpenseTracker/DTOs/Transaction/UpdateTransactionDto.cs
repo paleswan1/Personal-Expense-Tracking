@@ -1,6 +1,6 @@
 ﻿namespace PersonalExpenseTracker.DTOs.Transaction;
 
-public class UpdateTransactionDto
+public class UpdateTransactionDto: InsertTransactionDto
 {
-    public Guid TransactionId { get; set; }
+    public Guid Id { get; set; }
 }
