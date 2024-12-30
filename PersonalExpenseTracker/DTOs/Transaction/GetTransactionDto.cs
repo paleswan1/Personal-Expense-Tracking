@@ -1,4 +1,5 @@
-﻿using PersonalExpenseTracker.Models.Constant;
+﻿using PersonalExpenseTracker.DTOs.Tags;
+using PersonalExpenseTracker.Models.Constant;
 
 namespace PersonalExpenseTracker.DTOs.Transaction;
 
@@ -16,4 +17,5 @@ public class GetTransactionDto
 
     public int Amount { get; set; }
 
+    public List<GetTagDto> Tags { get; set; }  
 }

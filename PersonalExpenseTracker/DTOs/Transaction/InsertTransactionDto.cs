@@ -13,5 +13,7 @@ public class InsertTransactionDto
     public TransactionSource Source { get; set; }
 
     public int Amount { get; set; }
+
+    public List<Guid> TagIds { get; set; }
 }
 
