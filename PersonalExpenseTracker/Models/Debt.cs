@@ -4,7 +4,7 @@ namespace PersonalExpenseTracker.Models;
 
 public class Debt: BaseEntity<Guid>
 {
-    public int id { get; set; }
+    public string Title { get; set; }
 
     public string Source { get; set; }
 
