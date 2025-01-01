@@ -24,8 +24,8 @@ public static class InfrastructureService
             config.SnackbarConfiguration.ShowCloseIcon = true;
             config.SnackbarConfiguration.PreventDuplicates = false;
             config.SnackbarConfiguration.VisibleStateDuration = 10000;
-            config.SnackbarConfiguration.HideTransitionDuration = 500;
-            config.SnackbarConfiguration.ShowTransitionDuration = 500;
+            config.SnackbarConfiguration.HideTransitionDuration = 1000;
+            config.SnackbarConfiguration.ShowTransitionDuration = 1000;
         });
     }
 }
