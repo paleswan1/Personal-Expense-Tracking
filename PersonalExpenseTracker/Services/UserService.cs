@@ -1,8 +1,8 @@
-using PersonalExpenseTracker.DTOs.Authentication;
-using PersonalExpenseTracker.DTOs.Balance;
-using PersonalExpenseTracker.DTOs.Transaction;
+using PersonalExpenseTracker.Models;
 using PersonalExpenseTracker.Managers;
 using PersonalExpenseTracker.Repositories;
+using PersonalExpenseTracker.Models.Constant;
+using PersonalExpenseTracker.DTOs.Authentication;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
@@ -13,7 +13,7 @@ public class UserService(ISerializeDeserializeManager serializeDeserializeManage
     {
         var userDetails = localStorageManager.GetItemAsync<string>("user_details");
 
-        if (userDetails == null || userDetails.Result == null)
+        if (userDetails.Result == null)
         {
             return null;
         }
@@ -27,14 +27,16 @@ public class UserService(ISerializeDeserializeManager serializeDeserializeManage
 
         var result = deserializedUserDetails.FirstOrDefault();
 
-        return result;
+        var user = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath).FirstOrDefault(x => x.Id == result?.Id);
+
+        if (user == null) return null;
         
-    }
-
-    public void UpdateBalance(UpdateBalanceDto balance, GetTransactionDto transaction)
-    {
-        var balance = genericRepository.GetAll<balance>(appBalanceFilePath);
-
-        var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
+        return new UserDetailsDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Currency = user.Currency,
+            UserName = user.Username
+        };
     }
 }

@@ -1,33 +1,27 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.Extensions.Logging;
-using MudBlazor.Services;
+﻿using Microsoft.Extensions.Logging;
+using PersonalExpenseTracker.Services.Dependency;
 
-namespace PersonalExpenseTracker
+namespace PersonalExpenseTracker;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                });
+        var builder = MauiApp.CreateBuilder();
 
-            builder.Services.AddMauiBlazorWebView();
+        var services = builder.Services;
+            
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
+            
+        builder.Logging.AddDebug();
 
-            builder.Services.AddBlazoredLocalStorage();
+        services.AddInfrastructureService();
 
-#if DEBUG
-            builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
-
-            builder.Services.AddMudServices();
-#endif
-
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

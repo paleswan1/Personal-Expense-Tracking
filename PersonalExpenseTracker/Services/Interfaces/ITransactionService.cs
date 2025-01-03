@@ -7,14 +7,14 @@ public interface ITransactionService
     GetTransactionDto GetTransactionById(Guid transactionId);
 
     /// <summary>
-    /// Select * from tag;
+    /// SELECT * FROM Transactions;
     /// </summary>
     /// <returns></returns>
     List<GetTransactionDto> GetTransactions();
 
     void InsertTransaction(InsertTransactionDto transaction);
 
-    void UpdateTrasaction(UpdateTransactionDto transaction);
+    void UpdateTransaction(UpdateTransactionDto transaction);
 
     void ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction);
 }

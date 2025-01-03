@@ -8,6 +8,5 @@ public interface IAuthenticationService
 
     void Register(RegisterRequestDto register);
 
-    UserDetailsDto? Login(LoginRequestDto login); 
-
+    void Login(LoginRequestDto login); 
 }

@@ -3,5 +3,4 @@
 public class ActivateDeactivateDebtDto
 {
     public Guid Id { get; set; }
-
 }

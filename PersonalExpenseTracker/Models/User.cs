@@ -3,7 +3,7 @@ using System.Data;
 
 namespace PersonalExpenseTracker.Models;
 
-public class User: BaseEntity<Guid>
+public class User : BaseEntity<Guid>
 {
     public string Username { get; set; }
 
@@ -12,6 +12,4 @@ public class User: BaseEntity<Guid>
     public string PasswordHash { get; set; }
 
     public string Currency { get; set; }
-
-    public double Balance { get; set; }
 }

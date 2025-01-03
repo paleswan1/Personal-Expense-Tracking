@@ -1,20 +1,18 @@
-﻿using PersonalExpenseTracker.DTOs.Debts;
-using PersonalExpenseTracker.Models;
+﻿using PersonalExpenseTracker.Models;
+using PersonalExpenseTracker.DTOs.Debts;
 using PersonalExpenseTracker.Repositories;
+using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
 
 public class DebtService(IGenericRepository genericRepository, IUserService userService) : IDebtService
 {
-    private static string appDataDirectoryPath = ExtensionMethods.GetAppDirectoryPath();
-    private static string appDebtsFilePath = ExtensionMethods.GetAppDebtsFilePath();
-
-    public GetDebtDto GetDebtById(Guid Id)
+    public GetDebtDto GetDebtById(Guid id)
     {
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
-        var debt = debts.FirstOrDefault(x => x.Id == Id);
+        var debt = debts.FirstOrDefault(x => x.Id == id);
 
         if (debt == null)
         {
@@ -32,9 +30,10 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         };
     }
 
-    public List<GetDebtDto> GetTransactions()
+    public List<GetDebtDto> GetDebts()
     {
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
+        
         var userDetails = userService.GetUserDetails();
 
         if (userDetails == null)
@@ -71,16 +70,16 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             Source = debt.Source,
             Amount = debt.Amount,
             DueDate = debt.DueDate,
-            Status = false,
+            Status = DebtStatus.Pending,
             CreatedBy = userDetails.Id,
             CreatedAt = DateTime.Now,
         };
 
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
         debts.Add(debtModel);
 
-        genericRepository.SaveAll(debts, appDataDirectoryPath, appDebtsFilePath);
+        genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
     public void UpdateDebt(UpdateDebtDto debt)
@@ -92,7 +91,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             throw new Exception("You are not logged in.");
         }
 
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
         var debtModel = debts.FirstOrDefault(x => x.Id == debt.Id);
 
@@ -109,10 +108,10 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         debtModel.LastModifiedBy = userDetails.Id;
         debtModel.LastModifiedAt = DateTime.Now;
 
-        genericRepository.SaveAll(debts, appDataDirectoryPath, appDebtsFilePath);
+        genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
-    public void MarkDebtAsPaid(Guid debtId)
+    public void ClearDebt(Guid debtId)
     {
         var userDetails = userService.GetUserDetails();
 
@@ -121,7 +120,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             throw new Exception("You are not logged in.");
         }
 
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
         var debtModel = debts.FirstOrDefault(x => x.Id == debtId);
 
@@ -130,16 +129,21 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             throw new Exception("A debt with the following identifier couldn't be found.");
         }
 
-        debtModel.Status = true;
+        if (debtModel.Status == DebtStatus.Cleared)
+        {
+            throw new Exception("You can not clear an already cleared debt.");
+        }
+        
+        debtModel.Status = DebtStatus.Cleared;
         debtModel.LastModifiedBy = userDetails.Id;
         debtModel.LastModifiedAt = DateTime.Now;
 
-        genericRepository.SaveAll(debts, appDataDirectoryPath, appDebtsFilePath);
+        genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
     public void ActivateDeactivateDebt(ActivateDeactivateDebtDto debt)
     {
-        var debts = genericRepository.GetAll<Debt>(appDebtsFilePath);
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
         var debtModel = debts.FirstOrDefault(x => x.Id == debt.Id);
 
@@ -150,7 +154,6 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
 
         debts.Remove(debtModel);
 
-        genericRepository.SaveAll(debts, appDataDirectoryPath, appDebtsFilePath);
+        genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
-
 }

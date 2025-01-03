@@ -1,17 +1,19 @@
 ﻿using PersonalExpenseTracker.Models.Base;
+using PersonalExpenseTracker.Models.Constant;
 
 namespace PersonalExpenseTracker.Models;
 
-public class Debt: BaseEntity<Guid>
+public class Debt : BaseEntity<Guid>
 {
     public string Title { get; set; }
 
     public string Source { get; set; }
 
-    public int Amount { get; set; }
+    public decimal Amount { get; set; }
 
-    public DateTime DueDate { get; set; }
+    public DateOnly DueDate { get; set; }
 
-    public bool Status { get; set; }
+    public DateTime? ClearedDate { get; set; }
 
+    public DebtStatus Status { get; set; }
 }

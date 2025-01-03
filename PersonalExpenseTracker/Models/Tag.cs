@@ -2,7 +2,7 @@
 
 namespace PersonalExpenseTracker.Models;
 
-public class Tag: BaseEntity<Guid>
+public class Tag : BaseEntity<Guid>
 {
     public string Name { get; set; }
 
@@ -11,5 +11,4 @@ public class Tag: BaseEntity<Guid>
     public string BackgroundColor { get; set; }
 
     public bool IsDefault {get; set;} 
-
 }

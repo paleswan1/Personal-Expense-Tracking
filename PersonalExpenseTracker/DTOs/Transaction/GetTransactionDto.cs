@@ -15,7 +15,7 @@ public class GetTransactionDto
 
     public TransactionSource Source { get; set; }
 
-    public int Amount { get; set; }
+    public decimal Amount { get; set; }
 
     public List<GetTagDto> Tags { get; set; }  
 }

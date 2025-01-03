@@ -1,22 +1,23 @@
 ﻿using System.Security.Cryptography;
 
-namespace PersonalExpenseTracker.Services;
+namespace PersonalExpenseTracker.Managers.Helper;
 
 public static class ExtensionMethods
 {
-    private const char _segmentDelimiter = ':';
+    private const char SegmentDelimiter = ':';
 
     public static string HashSecret(this string input)
     {
-        var saltSize = 16;
-        var iterations = 100_000;
-        var keySize = 32;
+        const int keySize = 32;
+        const int saltSize = 16;
+        const int iterations = 100_000;
+        
         var algorithm = HashAlgorithmName.SHA256;
         var salt = RandomNumberGenerator.GetBytes(saltSize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(input, salt, iterations, algorithm, keySize);
 
         var result = string.Join( 
-            _segmentDelimiter,
+            SegmentDelimiter,
             Convert.ToHexString(hash),
             Convert.ToHexString(salt),
             iterations,
@@ -28,7 +29,7 @@ public static class ExtensionMethods
 
     public static bool VerifyHash(this string input, string hashString)
     {
-        var segments = hashString.Split(_segmentDelimiter);
+        var segments = hashString.Split(SegmentDelimiter);
         var hash = Convert.FromHexString(segments[0]);
         var salt = Convert.FromHexString(segments[1]);
         var iterations = int.Parse(segments[2]);
@@ -45,7 +46,7 @@ public static class ExtensionMethods
     }
 
     /// <summary>
-    /// Initializing a method so as to retrieve the directory path to store all the records and logs
+    /// Initializing a method to retrieve the directory path to store all the records and logs
     /// </summary>
     /// <returns>Path of the directory that holds all the application data</returns>
     public static string GetAppDirectoryPath()
@@ -75,6 +76,6 @@ public static class ExtensionMethods
 
     public static string GetAppTransactionTagsFilePath()
     {
-        return Path.Combine(GetAppDirectoryPath(), "transcation-tags.json");
+        return Path.Combine(GetAppDirectoryPath(), "transaction-tags.json");
     }
 }

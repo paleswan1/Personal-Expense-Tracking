@@ -1,20 +1,17 @@
-﻿using PersonalExpenseTracker.DTOs.Tags;
-using PersonalExpenseTracker.DTOs.Transaction;
-using PersonalExpenseTracker.Models;
+﻿using PersonalExpenseTracker.Models;
+using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Repositories;
+using PersonalExpenseTracker.DTOs.Transaction;
+using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
 
 public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
 {
-    private static string appDataDirectoryPath = ExtensionMethods.GetAppDirectoryPath();
-    private static string appTransactionsFilePath = ExtensionMethods.GetAppTransactionsFilePath();
-    private static string appTransactionTagsFilePath = ExtensionMethods.GetAppTransactionTagsFilePath();
-
     public GetTransactionDto GetTransactionById(Guid transactionId)
     {
-        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
         var transaction = transactions.FirstOrDefault(x => x.Id == transactionId);
 
@@ -23,7 +20,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("A transaction with the following identifier couldn't be found.");
         }
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>(appTransactionTagsFilePath);
+        var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         transactionTags = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
 
@@ -50,9 +47,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
     public List<GetTransactionDto> GetTransactions()
     {
-        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>(appTransactionTagsFilePath);
+        var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         var userDetails = userService.GetUserDetails();
 
@@ -69,14 +66,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         {
             var transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
 
-            var tags = new List<GetTagDto>();
-        
-            foreach(var transactionTag in transactionTags)
-            {
-                var tag = tagService.GetTagById(transactionTag.TagId);
-
-                tags.Add(tag);
-            }
+            var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
 
             result.Add(new GetTransactionDto
             {
@@ -102,9 +92,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
 
-        if (transaction.Type == Models.Constant.TransactionType.Outflows)
+        if (transaction.Type == TransactionType.Outflows)
         {
-            var incomingCashFlows = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+            var incomingCashFlows = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
         }
 
         var transactionModel = new Transaction
@@ -119,13 +109,13 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             CreatedAt = DateTime.Now,
         };
 
-        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
         transactions.Add(transactionModel);
 
-        genericRepository.SaveAll(transactions, appDataDirectoryPath, appTransactionsFilePath);
+        genericRepository.SaveAll(transactions, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionsDirectoryPath);
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>(appTransactionTagsFilePath);
+        var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         foreach(var tagId in transaction.TagIds)
         {
@@ -142,10 +132,10 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             transactionTags.Add(transactionTag);
         }
 
-        genericRepository.SaveAll(transactionTags, appDataDirectoryPath, appTransactionTagsFilePath);
+        genericRepository.SaveAll(transactionTags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionTagsDirectoryPath);
     }
 
-    public void UpdateTrasaction(UpdateTransactionDto transaction)
+    public void UpdateTransaction(UpdateTransactionDto transaction)
     {
         var userDetails = userService.GetUserDetails();
 
@@ -154,7 +144,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
 
-        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
         var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
 
@@ -171,9 +161,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         transactionModel.LastModifiedBy = userDetails.Id;
         transactionModel.LastModifiedAt = DateTime.Now;
 
-        genericRepository.SaveAll(transactions, appDataDirectoryPath, appTransactionsFilePath);
+        genericRepository.SaveAll(transactions, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionsDirectoryPath);
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>(appTransactionTagsFilePath);
+        var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         transactionTags.RemoveAll(x => x.TransactionId == transactionModel.Id);
     
@@ -192,12 +182,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             transactionTags.Add(transactionTag);
         }
 
-        genericRepository.SaveAll(transactionTags, appDataDirectoryPath, appTransactionTagsFilePath);
+        genericRepository.SaveAll(transactionTags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionTagsDirectoryPath);
     }
 
     public void ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction)
     {
-        var transactions = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
         var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
 
@@ -206,15 +196,15 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("A transaction with the following identifier couldn't be found.");
         }
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>(appTransactionTagsFilePath);
+        var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         transactionTags.RemoveAll(x => x.TransactionId == transactionModel.Id);
 
-        genericRepository.SaveAll(transactionTags, appDataDirectoryPath, appTransactionTagsFilePath);
+        genericRepository.SaveAll(transactionTags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionTagsDirectoryPath);
 
         transactions.Remove(transactionModel);
 
-        genericRepository.SaveAll(transactions, appDataDirectoryPath, appTransactionsFilePath);
+        genericRepository.SaveAll(transactions, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionsDirectoryPath);
     }
     
 }

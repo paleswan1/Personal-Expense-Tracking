@@ -1,4 +1,5 @@
 ﻿using PersonalExpenseTracker.Models.Base;
+using PersonalExpenseTracker.Models.Constant;
 
 namespace PersonalExpenseTracker.DTOs.Debts;
 
@@ -8,12 +9,13 @@ public class GetDebtDto
 
     public string Title { get; set; }
 
-    public int Amount   { get; set; }   
+    public decimal Amount   { get; set; }   
 
     public string Source { get; set; }
 
-    public bool Status { get; set; }
+    public DebtStatus Status { get; set; }
 
-    public DateTime DueDate { get; set; }
+    public DateOnly DueDate { get; set; }
 
+    public DateTime? ClearedDate { get; set; }
 }

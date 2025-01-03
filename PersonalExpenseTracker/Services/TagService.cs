@@ -1,18 +1,16 @@
-﻿using PersonalExpenseTracker.DTOs.Tags;
-using PersonalExpenseTracker.Models;
+﻿using PersonalExpenseTracker.Models;
+using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Repositories;
+using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
 
 public class TagService(IGenericRepository genericRepository, IUserService userService) : ITagService
 {
-    private static string appDataDirectoryPath = ExtensionMethods.GetAppDirectoryPath();
-    private static string appTagsFilePath = ExtensionMethods.GetAppTagsFilePath();
-
     public GetTagDto GetTagById(Guid tagId)
     {
-        var tags = genericRepository.GetAll<Tag>(appTagsFilePath);
+        var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
 
         var tag = tags.FirstOrDefault(x => x.Id == tagId);
 
@@ -34,29 +32,25 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
 
     public List<GetTagDto> GetTags()
     {
-        var tags = genericRepository.GetAll<Tag>(appTagsFilePath);
+        var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
+        
         var userDetails = userService.GetUserDetails();
 
         if (userDetails == null)
         {
             throw new Exception("You are not logged in.");
         }
+        
         tags = tags.Where(x => x.IsDefault || x.CreatedBy == userDetails.Id).ToList();
-        //return tags.Select(tag => new GetTagDto
-        //{
-        //    Id = tag.Id,
-        //    Name = tag.Name,
-        //    BackgroundColor = tag.BackgroundColor,
-        //    TextColor = tag.TextColor
-        //}).ToList();
-
-        // Initialization of GetTagDto list
+        
+        // Initialization of GetTagDto List
         var result = new List<GetTagDto>();
 
-        // Iterating through all records of tags
+        // Iterating through all records and data of tags
         foreach (var tag in tags)
         {
-            // Addition of new GetTagDto object to the result list.
+            // Addition of new data transfer object to the result list.
+            
             result.Add(new GetTagDto()
             {
                 Id = tag.Id,
@@ -88,11 +82,11 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
             CreatedAt = DateTime.Now,
         };
 
-        var tags = genericRepository.GetAll<Tag>(appTagsFilePath);
+        var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
 
         tags.Add(tagModel);
 
-        genericRepository.SaveAll(tags, appDataDirectoryPath, appTagsFilePath);
+        genericRepository.SaveAll(tags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTagsDirectoryPath);
     }
 
     public void UpdateTag(UpdateTagDto tag)
@@ -104,7 +98,7 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
             throw new Exception("You are not logged in.");
         }
 
-        var tags = genericRepository.GetAll<Tag>(appTagsFilePath);
+        var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
 
         var tagModel = tags.FirstOrDefault(x => x.Id == tag.Id);
 
@@ -119,12 +113,12 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         tagModel.LastModifiedBy = userDetails.Id;
         tagModel.LastModifiedAt = DateTime.Now;
 
-        genericRepository.SaveAll(tags,appDataDirectoryPath, appTagsFilePath);
+        genericRepository.SaveAll(tags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTagsDirectoryPath);
     }
 
     public void ActivateDeactivateTag(ActivateDeactivateTagDto tag)
     {
-        var tags = genericRepository.GetAll<Tag>(appTagsFilePath);
+        var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
 
         var tagModel = tags.FirstOrDefault(x => x.Id == tag.Id);
 
@@ -135,6 +129,6 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
 
         tags.Remove(tagModel);
 
-        genericRepository.SaveAll(tags,appDataDirectoryPath, appTagsFilePath);
+        genericRepository.SaveAll(tags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTagsDirectoryPath);
     }
 }

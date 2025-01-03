@@ -15,16 +15,22 @@ public enum TransactionSource
     Budget = 3,
     Debit = 4,
     Spending = 5,
-    Expenses = 6,
-
+    Expenses = 6
 }
 
-public enum currency
+public enum Currency
 {
     None = 0,
-    NPR= 1,
-    INR=2,
+    NRP = 1,
+    INR = 2,
     USD = 3,
-    DHR = 4,
+    AUD = 4,
 }
 
+public enum DebtStatus
+{
+    None = 0,
+    Cleared = 1,
+    Pending = 2,
+    PastDue = 3
+}

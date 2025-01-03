@@ -1,6 +1,8 @@
 ﻿using PersonalExpenseTracker.DTOs.Authentication;
 using PersonalExpenseTracker.Managers;
+using PersonalExpenseTracker.Managers.Helper;
 using PersonalExpenseTracker.Models;
+using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Services.Interfaces;
 
@@ -8,40 +10,35 @@ namespace PersonalExpenseTracker.Services;
 
 public class AuthenticationService(IGenericRepository genericRepository, ISerializeDeserializeManager serializeDeserializeManager, ILocalStorageManager localStorageManager) : IAuthenticationService 
 {
-    private static string appDataDirectoryPath = ExtensionMethods.GetAppDirectoryPath();
-    private static string appUsersFilePath = ExtensionMethods.GetAppUsersFilePath();
-
     /// <summary>
     /// Retrieves users list from the respective user load file path
     /// </summary>
-    /// <returns>List must have atleast one record. Therefore, it returns whether a user is registered or not.</returns>
+    /// <returns> List must have at least one record. Therefore, it returns whether a user is registered or not. </returns>
     public bool IsUserRegistered()
     {
-        var users = genericRepository.GetAll<User>(appUsersFilePath);
-        return users != null && users.Any();
+        var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
+        
+        return users.Count != 0;
     }
 
-    public UserDetailsDto? Login(LoginRequestDto login)
+    public void Login(LoginRequestDto login)
     {
-        var users = genericRepository.GetAll<User>(appUsersFilePath);
+        var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
 
         var user = users.FirstOrDefault(x => x.Username == login.Username.Trim().ToLower());
 
         if (user == null)
         {
-            throw new Exception();
+            throw new Exception("Invalid username, please try again.");
         }
-
-        // var isPasswordValid = ExtensionMethods.VerifyHash(login.Password, user.PasswordHash);
 
         var isPasswordValid = login.Password.VerifyHash(user.PasswordHash);
 
-        if(!isPasswordValid)
+        if (!isPasswordValid)
         {
-            throw new Exception();
+            throw new Exception("Please provide a valid password.");
         }
 
-        // This is the object of userDetails that will be converted into json object. 
         var result = new UserDetailsDto
         {
             Id = user.Id,
@@ -58,20 +55,18 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
         var serializedUserDetails = serializeDeserializeManager.Serialize(userDetails);
 
         localStorageManager.SetItemAsync("user_details", serializedUserDetails);
-
-        return result;
     }
 
     public void Register(RegisterRequestDto register)
     {
         register.UserName = register.UserName.Trim();
 
-        if(register.UserName == "" || register.Currency == "" || register.Password == "")
+        if (register.UserName == "" || register.Currency == "" || register.Password == "")
         {
             throw new Exception("Please insert correct and valid input for each of the fields.");
         }
 
-        var users = genericRepository.GetAll<User>(appUsersFilePath);
+        var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
 
         var usernameExists = users.Any(x => x.Username == register.UserName);
 
@@ -83,7 +78,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
         var user = new User()
         {
             Username = register.UserName,
-            PasswordHash = ExtensionMethods.HashSecret(register.Password),
+            PasswordHash = register.Password.HashSecret(),
             Currency = register.Currency,
             CreatedAt = DateTime.Now,
             IsActive = true,
@@ -92,6 +87,6 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
 
         users.Add(user);
 
-        genericRepository.SaveAll(users, appDataDirectoryPath, appUsersFilePath);
+        genericRepository.SaveAll(users, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppUsersDirectoryPath);
     }
 }
