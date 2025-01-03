@@ -1,6 +1,8 @@
 ﻿using MudBlazor;
 using MudBlazor.Services;
 using Blazored.LocalStorage;
+using PersonalExpenseTracker.Managers;
+using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services.Dependency;
@@ -28,12 +30,17 @@ public static class InfrastructureService
             config.SnackbarConfiguration.ShowCloseIcon = true;
             config.SnackbarConfiguration.PreventDuplicates = false;
             config.SnackbarConfiguration.VisibleStateDuration = 10000;
-            config.SnackbarConfiguration.HideTransitionDuration = 1000;
-            config.SnackbarConfiguration.ShowTransitionDuration = 1000;
+            config.SnackbarConfiguration.HideTransitionDuration = 500;
+            config.SnackbarConfiguration.ShowTransitionDuration = 500;
         });
         #endregion
 
         #region Dependency Injection
+        services.AddTransient<ILocalStorageManager, LocalStorageManager>();
+        services.AddTransient<ISerializeDeserializeManager, SerializeDeserializeManager>();
+
+        services.AddTransient<IGenericRepository, GenericRepository>();
+
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IDebtService, DebtService>();
         services.AddTransient<ISnackbarService, SnackbarService>();

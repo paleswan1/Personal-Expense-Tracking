@@ -45,13 +45,13 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         }; 
     }
 
-    public List<GetTransactionDto> GetTransactions()
+    public async Task<List<GetTransactionDto>> GetTransactions()
     {
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
         var transactionTags = genericRepository.GetAll<TransactionTags>(Constants.FilePath.AppTransactionTagsDirectoryPath);
 
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -83,9 +83,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         return result;
     }
 
-    public void InsertTransaction(InsertTransactionDto transaction)
+    public async Task InsertTransaction(InsertTransactionDto transaction)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -94,7 +94,16 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
         if (transaction.Type == TransactionType.Outflows)
         {
-            var incomingCashFlows = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
+            var transactionModels = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
+            var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
+
+            var incomingCashFlowAmounts = transactionModels.Where(x => x.Type == TransactionType.Inflows).Sum(x => x.Amount);
+            var clearedDebtAmounts = debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
+
+            if (transaction.Amount > incomingCashFlowAmounts + clearedDebtAmounts)
+            {
+                throw new Exception("You do not have sufficient balance to perform the following cash outflow transaction.");
+            }
         }
 
         var transactionModel = new Transaction
@@ -135,9 +144,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         genericRepository.SaveAll(transactionTags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionTagsDirectoryPath);
     }
 
-    public void UpdateTransaction(UpdateTransactionDto transaction)
+    public async Task UpdateTransaction(UpdateTransactionDto transaction)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -206,5 +215,4 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
         genericRepository.SaveAll(transactions, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTransactionsDirectoryPath);
     }
-    
 }

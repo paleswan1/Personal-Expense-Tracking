@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using PersonalExpenseTracker.Components.Layout;
 using PersonalExpenseTracker.DTOs.Authentication;
 
 namespace PersonalExpenseTracker.Components.Pages;
 
-public partial class Login
+public partial class Register
 {
     protected override void OnInitialized()
     {
@@ -13,26 +13,28 @@ public partial class Login
     }
 
     #region Page Title
+
     [CascadingParameter] public MainLayout Layout { get; set; } = new();
 
     private void SetPageTitle()
     {
         Layout.PageTitle = "Login";
     }
-    #endregion
-    
-    #region User Registration
-    private LoginRequestDto LoginDetails { get; set; } = new();
 
-    private async Task LoginHandler()
+    #endregion
+
+    #region User Registration
+    private RegisterRequestDto Registration { get; set; } = new();
+
+    private void RegisterHandler()
     {
         try
         {
-            await AuthenticationService.Login(LoginDetails);
+            AuthenticationService.Register(Registration);
             
-            SnackbarService.ShowSnackbar("User successfully logged in.", Severity.Success, Variant.Outlined);
-
-            NavigationManager.NavigateTo("/dashboard");
+            SnackbarService.ShowSnackbar("User successfully registered.", Severity.Success, Variant.Outlined);
+            
+            NavigationManager.NavigateTo("/login");
         }
         catch (Exception ex)
         {

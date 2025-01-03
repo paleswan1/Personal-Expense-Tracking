@@ -30,11 +30,11 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         return result;
     }
 
-    public List<GetTagDto> GetTags()
+    public async Task<List<GetTagDto>> GetTags()
     {
         var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
         
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -63,9 +63,9 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         return result;
     }
 
-    public void InsertTag(InsertTagDto tag)
+    public async Task InsertTag(InsertTagDto tag)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -89,9 +89,9 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         genericRepository.SaveAll(tags, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppTagsDirectoryPath);
     }
 
-    public void UpdateTag(UpdateTagDto tag)
+    public async Task UpdateTag(UpdateTagDto tag)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {

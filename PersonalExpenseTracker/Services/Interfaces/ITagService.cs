@@ -15,11 +15,11 @@ public interface ITagService
     /// SELECT * FROM Tags;
     /// </summary>
     /// <returns></returns>
-    List<GetTagDto> GetTags();
+    Task<List<GetTagDto>> GetTags();
 
-    void InsertTag(InsertTagDto tag);
+    Task InsertTag(InsertTagDto tag);
 
-    void UpdateTag(UpdateTagDto tag);
+    Task UpdateTag(UpdateTagDto tag);
 
     void ActivateDeactivateTag(ActivateDeactivateTagDto tag);
 }

@@ -9,16 +9,16 @@ namespace PersonalExpenseTracker.Services;
 
 public class UserService(ISerializeDeserializeManager serializeDeserializeManager, ILocalStorageManager localStorageManager, IGenericRepository genericRepository) : IUserService
 {
-    public UserDetailsDto? GetUserDetails()
+    public async Task<UserDetailsDto?> GetUserDetails()
     {
-        var userDetails = localStorageManager.GetItemAsync<string>("user_details");
+        var userDetails = await localStorageManager.GetItemAsync<string>("user_details");
 
-        if (userDetails.Result == null)
+        if (userDetails == null)
         {
             return null;
         }
 
-        var deserializedUserDetails = serializeDeserializeManager.Deserialize<UserDetailsDto>(userDetails.Result);
+        var deserializedUserDetails = serializeDeserializeManager.Deserialize<UserDetailsDto>(userDetails);
 
         if (deserializedUserDetails.Count == 0)
         {
@@ -36,7 +36,20 @@ public class UserService(ISerializeDeserializeManager serializeDeserializeManage
             Id = user.Id,
             Name = user.Name,
             Currency = user.Currency,
-            UserName = user.Username
+            Username = user.Username
         };
+    }
+
+    public List<UserDetailsDto> GetAllUsers()
+    {
+        var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
+
+        return users.Select(x => new UserDetailsDto()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Username = x.Username,
+            Currency = x.Currency
+        }).ToList();
     }
 }

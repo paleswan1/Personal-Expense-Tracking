@@ -7,7 +7,7 @@ public partial class MainLayout
 {
     public string PageTitle { get; set; } = "Personal Expense Tracker";
     
-    public UserDetailsDto? UserDetails { get; set; }
+    private UserDetailsDto? UserDetails { get; set; }
     
     private bool DrawerOpen { get; set; } = true;
     
@@ -15,9 +15,14 @@ public partial class MainLayout
 
     private static bool RightToLeft => false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var userDetails = UserService.GetUserDetails();
+        await GetUserDetails();
+    }
+
+    public async Task GetUserDetails()
+    {
+        var userDetails = await UserService.GetUserDetails();
 
         if (userDetails != null)
         {
@@ -25,14 +30,18 @@ public partial class MainLayout
         }
         else
         {
-            NavigationManager.NavigateTo("/login");
+            var users = UserService.GetAllUsers();
+        
+            NavigationManager.NavigateTo(users.Count > 0 ? "/login" : "/register");
         }
     }
-
+    
     private void LogoutHandler()
     {
         AuthenticationService.Logout();
 
+        SnackbarService.ShowSnackbar("User successfully logged out.", Severity.Success, Variant.Outlined);
+        
         NavigationManager.NavigateTo("/login", true);
     }
 

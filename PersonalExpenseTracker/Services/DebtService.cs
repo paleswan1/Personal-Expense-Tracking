@@ -30,11 +30,11 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         };
     }
 
-    public List<GetDebtDto> GetDebts()
+    public async Task<List<GetDebtDto>> GetDebts()
     {
         var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
         
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -54,9 +54,9 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         }).ToList();
     }
 
-    public void InsertDebt(InsertDebtDto debt)
+    public async Task InsertDebt(InsertDebtDto debt)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -82,9 +82,9 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
-    public void UpdateDebt(UpdateDebtDto debt)
+    public async Task UpdateDebt(UpdateDebtDto debt)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -111,9 +111,9 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
-    public void ClearDebt(Guid debtId)
+    public async Task ClearDebt(Guid debtId)
     {
-        var userDetails = userService.GetUserDetails();
+        var userDetails = await userService.GetUserDetails();
 
         if (userDetails == null)
         {
@@ -141,8 +141,15 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }
 
-    public void ActivateDeactivateDebt(ActivateDeactivateDebtDto debt)
+    public async Task ActivateDeactivateDebt(ActivateDeactivateDebtDto debt)
     {
+        var userDetails = await userService.GetUserDetails();
+
+        if (userDetails == null)
+        {
+            throw new Exception("You are not logged in.");
+        }
+        
         var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
 
         var debtModel = debts.FirstOrDefault(x => x.Id == debt.Id);
@@ -152,7 +159,9 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             throw new Exception("A debt with the following identifier couldn't be found.");
         }
 
-        debts.Remove(debtModel);
+        debtModel.IsActive = false;
+        debtModel.LastModifiedBy = userDetails.Id;
+        debtModel.LastModifiedAt = DateTime.Now;
 
         genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }

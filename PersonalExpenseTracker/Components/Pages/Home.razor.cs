@@ -2,10 +2,19 @@
 
 public partial class Home
 {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var userDetails = UserService.GetUserDetails();
+        var userDetails = await UserService.GetUserDetails();
 
-        NavigationManager.NavigateTo(userDetails != null ? "/dashboard" : "/login");
+        if (userDetails != null)
+        {
+            NavigationManager.NavigateTo("/dashboard");
+            
+            return;
+        }
+
+        var users = UserService.GetAllUsers();
+        
+        NavigationManager.NavigateTo(users.Count > 0 ? "/login" : "/register");
     }
 }

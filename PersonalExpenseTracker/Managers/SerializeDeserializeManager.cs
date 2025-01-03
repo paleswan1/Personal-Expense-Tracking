@@ -1,14 +1,12 @@
 ﻿using System.Text.Json;
-using PersonalExpenseTracker.Managers;
 
-namespace PersonalExpenseTracker.Services.Manager;
+namespace PersonalExpenseTracker.Managers;
 
 public class SerializeDeserializeManager : ISerializeDeserializeManager
 {
     /// <summary>
-    ///To help with redundancy
-    ///Why seperate class?
-    ///To remove code redundancy such that a single method is created and thus called on both generic repo and authentication service
+    /// To help with redundancy
+    /// To remove code redundancy such that a single method is created and thus called on both generic repo and authentication service
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="entity"></param>

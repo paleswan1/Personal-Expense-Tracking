@@ -6,7 +6,7 @@ public class UserDetailsDto
 
     public string Name {  get; set; }
 
-    public string UserName { get; set; }
+    public string Username { get; set; }
 
     public string Currency { get; set; }
 }

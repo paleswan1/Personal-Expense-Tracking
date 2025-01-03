@@ -6,7 +6,7 @@ public interface IAuthenticationService
 {
     bool IsUserRegistered();
 
-    void Login(LoginRequestDto login); 
+    Task Login(LoginRequestDto login); 
     
     void Register(RegisterRequestDto register);
     

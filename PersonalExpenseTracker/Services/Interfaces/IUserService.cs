@@ -4,5 +4,7 @@ namespace PersonalExpenseTracker.Services.Interfaces;
 
 public interface IUserService
 {
-    UserDetailsDto? GetUserDetails();
+    Task<UserDetailsDto?> GetUserDetails();
+
+    List<UserDetailsDto> GetAllUsers();
 }

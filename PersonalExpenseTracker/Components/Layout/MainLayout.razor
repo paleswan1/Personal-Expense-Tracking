@@ -8,11 +8,9 @@
         <MudSnackbarProvider />
         @if (UserDetails == null || UserDetails?.Id == Guid.Empty)
         {
-            <MudContainer MaxWidth="MaxWidth.Large" Style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-                <MudPaper Elevation="25" Class="pa-8">
-                    @Body
-                </MudPaper>
-            </MudContainer>
+            <div class="container" style="height: 100vh; justify-content: center; align-items: center;">
+                @Body
+            </div>
         }
         else
         {
@@ -45,7 +43,7 @@
                                                 <MudText Typo="Typo.subtitle2" Class="fw-bold text-dark user-name">
                                                     @UserDetails?.Name
                                                 </MudText>
-                                                <MudText Typo="Typo.subtitle2" Class="text-normal user-email">@UserDetails?.UserName</MudText>
+                                                <MudText Typo="Typo.subtitle2" Class="text-normal user-email">@UserDetails?.Username</MudText>
                                             </MudPaper>
                                         </MudCardContent>
                                     </MudCard>
@@ -73,12 +71,12 @@
                     <NavMenu />
                 </MudDrawer>
                 <MudMainContent>
-                    <MudContainer MaxWidth="MaxWidth.False" Class="py-6 px-lg-8">
+                    <div class="py-6 px-lg-8">
                         @Body
                         <MudScrollToTop TopOffset="400" Style="z-index:2000;">
                             <MudFab StartIcon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary"/>
                         </MudScrollToTop>
-                    </MudContainer>
+                    </div>
                 </MudMainContent>
             </MudLayout>
         }

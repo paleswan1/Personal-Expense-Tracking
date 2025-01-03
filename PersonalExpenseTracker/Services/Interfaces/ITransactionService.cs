@@ -10,11 +10,11 @@ public interface ITransactionService
     /// SELECT * FROM Transactions;
     /// </summary>
     /// <returns></returns>
-    List<GetTransactionDto> GetTransactions();
+    Task<List<GetTransactionDto>> GetTransactions();
 
-    void InsertTransaction(InsertTransactionDto transaction);
+    Task InsertTransaction(InsertTransactionDto transaction);
 
-    void UpdateTransaction(UpdateTransactionDto transaction);
+    Task UpdateTransaction(UpdateTransactionDto transaction);
 
     void ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction);
 }

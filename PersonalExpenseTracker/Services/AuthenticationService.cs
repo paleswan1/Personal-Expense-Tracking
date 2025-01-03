@@ -21,7 +21,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
         return users.Count != 0;
     }
 
-    public void Login(LoginRequestDto login)
+    public async Task Login(LoginRequestDto login)
     {
         var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
 
@@ -44,7 +44,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
             Id = user.Id,
             Name = user.Name,
             Currency = user.Currency,
-            UserName = user.Username,
+            Username = user.Username,
         };
 
         var userDetails = new List<UserDetailsDto>()
@@ -54,21 +54,21 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
 
         var serializedUserDetails = serializeDeserializeManager.Serialize(userDetails);
 
-        localStorageManager.SetItemAsync("user_details", serializedUserDetails);
+        await localStorageManager.SetItemAsync("user_details", serializedUserDetails);
     }
 
     public void Register(RegisterRequestDto register)
     {
-        register.UserName = register.UserName.Trim();
+        register.Username = register.Username.Trim();
 
-        if (register.UserName == "" || register.Currency == "" || register.Password == "")
+        if (register.Username == "" || register.Currency == "" || register.Password == "")
         {
             throw new Exception("Please insert correct and valid input for each of the fields.");
         }
 
         var users = genericRepository.GetAll<User>(Constants.FilePath.AppUsersDirectoryPath);
 
-        var usernameExists = users.Any(x => x.Username == register.UserName);
+        var usernameExists = users.Any(x => x.Username == register.Username);
 
         if (usernameExists)
         {
@@ -77,12 +77,12 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
 
         var user = new User()
         {
-            Username = register.UserName,
+            Username = register.Username,
             PasswordHash = register.Password.HashSecret(),
             Currency = register.Currency,
             CreatedAt = DateTime.Now,
             IsActive = true,
-            Name = register.UserName
+            Name = register.Username
         };
 
         users.Add(user);
