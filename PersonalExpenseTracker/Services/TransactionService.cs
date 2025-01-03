@@ -1,8 +1,9 @@
 ﻿using PersonalExpenseTracker.Models;
 using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Repositories;
-using PersonalExpenseTracker.DTOs.Transaction;
 using PersonalExpenseTracker.Models.Constant;
+using PersonalExpenseTracker.DTOs.Transaction;
+using PersonalExpenseTracker.Filters.Transactions;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
@@ -45,7 +46,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         }; 
     }
 
-    public async Task<List<GetTransactionDto>> GetTransactions()
+    public async Task<List<GetTransactionDto>> GetAllTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
@@ -60,24 +61,42 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
         transactions = transactions.Where(x => x.CreatedBy == userDetails.Id).ToList();
 
+        if (!string.IsNullOrEmpty(transactionFilterRequest.Search))
+        {
+            transactions = transactions.Where(x => x.Title.Contains(transactionFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (transactionFilterRequest.StartDate != null)
+        {
+            transactions = transactions.Where(x => x.CreatedAt >= transactionFilterRequest.StartDate).ToList();
+        }
+
+        if (transactionFilterRequest.EndDate != null)
+        {
+            transactions = transactions.Where(x => x.CreatedAt <= transactionFilterRequest.EndDate).ToList();
+        }
+        
         var result = new List<GetTransactionDto>();
 
         foreach (var transaction in transactions)
         {
             var transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
 
-            var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
-
-            result.Add(new GetTransactionDto
+            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Contains(tagId)))
             {
-                Id = transaction.Id,
-                Title = transaction.Title,
-                Note = transaction.Note,
-                Type = transaction.Type,
-                Source = transaction.Source,
-                Amount = transaction.Amount,
-                Tags = tags
-            });
+                var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
+
+                result.Add(new GetTransactionDto
+                {
+                    Id = transaction.Id,
+                    Title = transaction.Title,
+                    Note = transaction.Note,
+                    Type = transaction.Type,
+                    Source = transaction.Source,
+                    Amount = transaction.Amount,
+                    Tags = tags
+                });
+            }
         }
 
         return result;

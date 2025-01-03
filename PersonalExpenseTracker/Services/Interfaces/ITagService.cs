@@ -1,4 +1,5 @@
 ﻿using PersonalExpenseTracker.DTOs.Tags;
+using PersonalExpenseTracker.Filters.Tags;
 
 namespace PersonalExpenseTracker.Services.Interfaces;
 
@@ -15,7 +16,7 @@ public interface ITagService
     /// SELECT * FROM Tags;
     /// </summary>
     /// <returns></returns>
-    Task<List<GetTagDto>> GetTags();
+    Task<List<GetTagDto>> GetAllTags(GetTagFilterRequestDto tagFilterRequest);
 
     Task InsertTag(InsertTagDto tag);
 

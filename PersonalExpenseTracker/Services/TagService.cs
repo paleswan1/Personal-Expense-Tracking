@@ -1,5 +1,6 @@
 ﻿using PersonalExpenseTracker.Models;
 using PersonalExpenseTracker.DTOs.Tags;
+using PersonalExpenseTracker.Filters.Tags;
 using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Services.Interfaces;
@@ -30,7 +31,7 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         return result;
     }
 
-    public async Task<List<GetTagDto>> GetTags()
+    public async Task<List<GetTagDto>> GetAllTags(GetTagFilterRequestDto tagFilterRequest)
     {
         var tags = genericRepository.GetAll<Tag>(Constants.FilePath.AppTagsDirectoryPath);
         
@@ -42,6 +43,20 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         }
         
         tags = tags.Where(x => x.IsDefault || x.CreatedBy == userDetails.Id).ToList();
+
+        if (!string.IsNullOrEmpty(tagFilterRequest.Search))
+        {
+            tags = tags.Where(x => x.Name.Contains(tagFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        
+        if (!string.IsNullOrEmpty(tagFilterRequest.OrderBy))
+        {
+            tags = tagFilterRequest.OrderBy switch
+            {
+                "Name" => tagFilterRequest.IsDescending ? tags.OrderByDescending(x => x.Name).ToList() : tags.OrderBy(x => x.Name).ToList(),
+                _ => tags
+            };
+        }
         
         // Initialization of GetTagDto List
         var result = new List<GetTagDto>();
@@ -50,8 +65,7 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         foreach (var tag in tags)
         {
             // Addition of new data transfer object to the result list.
-            
-            result.Add(new GetTagDto()
+            result.Add(new GetTagDto
             {
                 Id = tag.Id,
                 Name = tag.Name,

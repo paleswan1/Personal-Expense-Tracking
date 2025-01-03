@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+﻿using MudBlazor;
+using Microsoft.AspNetCore.Components;
 using PersonalExpenseTracker.Components.Layout;
 using PersonalExpenseTracker.DTOs.Authentication;
 
-namespace PersonalExpenseTracker.Components.Pages;
+namespace PersonalExpenseTracker.Components.Pages.Authentication;
 
 public partial class Register
 {

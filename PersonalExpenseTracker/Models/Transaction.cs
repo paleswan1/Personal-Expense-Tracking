@@ -1,5 +1,4 @@
-﻿
-using PersonalExpenseTracker.Models.Base;
+﻿using PersonalExpenseTracker.Models.Base;
 using PersonalExpenseTracker.Models.Constant;
 
 namespace PersonalExpenseTracker.Models;

@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using MudBlazor.Utilities;
 
 namespace PersonalExpenseTracker.Managers.Helper;
 
@@ -77,5 +78,39 @@ public static class ExtensionMethods
     public static string GetAppTransactionTagsFilePath()
     {
         return Path.Combine(GetAppDirectoryPath(), "transaction-tags.json");
+    }
+    
+    public static MudColor ToMudColor(this string hexCode)
+    {
+        if (string.IsNullOrEmpty(hexCode))
+            throw new ArgumentException("Invalid hexCode code.");
+
+        hexCode = hexCode.TrimStart('#');
+
+        switch (hexCode.Length)
+        {
+            case 6:
+            {
+                int r = Convert.ToByte(hexCode[..2], 16);
+                int g = Convert.ToByte(hexCode.Substring(2, 2), 16);
+                int b = Convert.ToByte(hexCode.Substring(4, 2), 16);
+                return new MudColor(r, g, b, 255);
+            }
+            case 8:
+            {
+                int r = Convert.ToByte(hexCode[..2], 16);
+                int g = Convert.ToByte(hexCode.Substring(2, 2), 16);
+                int b = Convert.ToByte(hexCode.Substring(4, 2), 16);
+                int a = Convert.ToByte(hexCode.Substring(6, 2), 16);
+                return new MudColor(r, g, b, a);
+            }
+            default:
+                throw new ArgumentException("Hex code must be 6 or 8 characters long.");
+        }
+    }
+    
+    public static string ToHexCode(this MudColor color)
+    {
+        return color.ToString(MudColorOutputFormats.Hex);
     }
 }
