@@ -4,8 +4,7 @@ namespace PersonalExpenseTracker.Models.Base;
 
 public class BaseEntity<TPrimaryKey>
 {
-    [Key]
-    public TPrimaryKey Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public bool IsActive { get; set; } = true;
 

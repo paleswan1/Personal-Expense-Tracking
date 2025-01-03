@@ -102,6 +102,11 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
 
+        if (transaction.Type == Models.Constant.TransactionType.Outflows)
+        {
+            var incomingCashFlows = genericRepository.GetAll<Transaction>(appTransactionsFilePath);
+        }
+
         var transactionModel = new Transaction
         {
             Id = Guid.NewGuid(),

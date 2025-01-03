@@ -12,4 +12,6 @@ public class User: BaseEntity<Guid>
     public string PasswordHash { get; set; }
 
     public string Currency { get; set; }
+
+    public double Balance { get; set; }
 }

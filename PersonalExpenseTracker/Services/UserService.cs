@@ -1,10 +1,13 @@
 using PersonalExpenseTracker.DTOs.Authentication;
+using PersonalExpenseTracker.DTOs.Balance;
+using PersonalExpenseTracker.DTOs.Transaction;
 using PersonalExpenseTracker.Managers;
+using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services;
 
-public class UserService(ISerializeDeserializeManager serializeDeserializeManager, ILocalStorageManager localStorageManager) : IUserService
+public class UserService(ISerializeDeserializeManager serializeDeserializeManager, ILocalStorageManager localStorageManager, IGenericRepository genericRepository) : IUserService
 {
     public UserDetailsDto? GetUserDetails()
     {
@@ -28,4 +31,10 @@ public class UserService(ISerializeDeserializeManager serializeDeserializeManage
         
     }
 
+    public void UpdateBalance(UpdateBalanceDto balance, GetTransactionDto transaction)
+    {
+        var balance = genericRepository.GetAll<balance>(appBalanceFilePath);
+
+        var transactionModel = transactions.FirstOrDefault(x => x.Id == transaction.Id);
+    }
 }
