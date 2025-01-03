@@ -1,6 +1,7 @@
-﻿using Blazored.LocalStorage;
-using MudBlazor;
+﻿using MudBlazor;
 using MudBlazor.Services;
+using Blazored.LocalStorage;
+using PersonalExpenseTracker.Services.Interfaces;
 
 namespace PersonalExpenseTracker.Services.Dependency;
 
@@ -8,6 +9,7 @@ public static class InfrastructureService
 {
     public static void AddInfrastructureService(this IServiceCollection services)
     {
+        #region Inject of Internal Services
         services.AddLocalization();
 
         services.AddMauiBlazorWebView();
@@ -15,7 +17,9 @@ public static class InfrastructureService
         services.AddBlazoredLocalStorage();
         
         services.AddBlazorWebViewDeveloperTools();
+        #endregion
 
+        #region Mudblazor Service
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
@@ -27,5 +31,15 @@ public static class InfrastructureService
             config.SnackbarConfiguration.HideTransitionDuration = 1000;
             config.SnackbarConfiguration.ShowTransitionDuration = 1000;
         });
+        #endregion
+
+        #region Dependency Injection
+        services.AddTransient<IAuthenticationService, AuthenticationService>();
+        services.AddTransient<IDebtService, DebtService>();
+        services.AddTransient<ISnackbarService, SnackbarService>();
+        services.AddTransient<ITagService, TagService>();
+        services.AddTransient<ITransactionService, TransactionService>();
+        services.AddTransient<IUserService, UserService>();
+        #endregion
     }
 }

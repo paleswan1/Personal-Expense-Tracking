@@ -89,4 +89,9 @@ public class AuthenticationService(IGenericRepository genericRepository, ISerial
 
         genericRepository.SaveAll(users, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppUsersDirectoryPath);
     }
+
+    public void Logout()
+    {
+        localStorageManager.ClearItemAsync("user_details");
+    }
 }

@@ -6,7 +6,9 @@ public interface IAuthenticationService
 {
     bool IsUserRegistered();
 
-    void Register(RegisterRequestDto register);
-
     void Login(LoginRequestDto login); 
+    
+    void Register(RegisterRequestDto register);
+    
+    void Logout(); 
 }

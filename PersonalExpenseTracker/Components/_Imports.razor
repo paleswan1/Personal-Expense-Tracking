@@ -1,21 +1,32 @@
-﻿
+﻿@* Blazor MAUI Configurations *@
 @using System.Net.Http
 @using System.Net.Http.Json
-
-@using Blazored.LocalStorage
-
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 
+@* Blazored Local Storage *@
+@using Blazored.LocalStorage
+
+@* JS Interop Functions and Invoke Procedures *@
 @using Microsoft.JSInterop
 
+@* Component and Namespace *@
 @using PersonalExpenseTracker
 @using PersonalExpenseTracker.Components
 @using PersonalExpenseTracker.Components.Layout
+@using PersonalExpenseTracker.Services.Interfaces
 
+@* Mudblazor Injection *@
 @using MudBlazor
 
+@* Service and Manager Injection *@
+@inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
-@inject NavigationManager Navigation
+@inject IAuthenticationService AuthenticationService
+@inject IDebtService DebtService
+@inject ISnackbarService SnackbarService
+@inject ITagService TagService
+@inject ITransactionService TransactionService
+@inject IUserService UserService

@@ -84,3 +84,29 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+/* Header Profile Dropdown */
+.profile-dropdown {
+    min-width: 250px;
+    overflow-x: hidden;
+}
+
+.profile-dropdown .mud-list-item {
+    padding: 8px;
+    -webkit-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+
+.profile-dropdown .mud-list-item-clickable:hover {
+    background: transparent;
+    -webkit-transform: translateX(10px);
+    -ms-transform: translateX(10px);
+    transform: translateX(10px);
+}
+
+.profile-dropdown .user-name,
+.profile-dropdown .user-email,
+.profile-dropdown .user-designation {
+    line-height: 16px;
+}

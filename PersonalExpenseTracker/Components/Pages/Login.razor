@@ -1,23 +1,2 @@
-﻿@page "/"
-@layout Empty   
-
-<h3>Login</h3>
-
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p style="color:red">@errorMessage</p>
-}
-
-<div>
-    <label for="username">Username:</label>
-    <input id="username" @bind="username" type="text" />
-</div>
-<div>
-    <label for="password">Password:</label>
-    <input id="password" @bind="password" type="password" />
-</div>
-<div>
-    <button @onclick="LoginHandler">Login</button>
-</div>
-
-
+﻿@page "/login"
+@layout EmptyLayout   
