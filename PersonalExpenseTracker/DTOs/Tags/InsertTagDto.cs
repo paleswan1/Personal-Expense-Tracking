@@ -1,10 +1,12 @@
-﻿namespace PersonalExpenseTracker.DTOs.Tags;
+﻿using MudBlazor.Utilities;
+
+namespace PersonalExpenseTracker.DTOs.Tags;
 
 public class InsertTagDto
 {
     public string Name { get; set; }
 
-    public string BackgroundColor { get; set; }
+    public MudColor BackgroundColor { get; set; } = new();
 
-    public string TextColor { get; set; }
+    public MudColor TextColor { get; set; } = new();
 }

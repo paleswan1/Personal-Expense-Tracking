@@ -1,6 +1,7 @@
 ﻿using PersonalExpenseTracker.Models;
 using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Filters.Tags;
+using PersonalExpenseTracker.Managers.Helper;
 using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.Services.Interfaces;
@@ -90,8 +91,8 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         {
             Id = Guid.NewGuid(), 
             Name = tag.Name,
-            BackgroundColor = tag.BackgroundColor,
-            TextColor = tag.TextColor,
+            BackgroundColor = tag.BackgroundColor.ToHexCode(),
+            TextColor = tag.TextColor.ToHexCode(),
             CreatedBy = userDetails.Id,
             CreatedAt = DateTime.Now,
         };
@@ -122,8 +123,8 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         }
 
         tagModel.Name = tag.Name;
-        tagModel.BackgroundColor = tag.BackgroundColor;
-        tagModel.TextColor = tag.TextColor;
+        tagModel.BackgroundColor = tag.BackgroundColor.ToHexCode();
+        tagModel.TextColor = tag.TextColor.ToHexCode();
         tagModel.LastModifiedBy = userDetails.Id;
         tagModel.LastModifiedAt = DateTime.Now;
 
