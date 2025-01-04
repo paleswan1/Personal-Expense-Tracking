@@ -4,6 +4,7 @@ using Blazored.LocalStorage;
 using PersonalExpenseTracker.Managers;
 using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Services.Interfaces;
+using PersonalExpenseTracker.Services.Seed;
 
 namespace PersonalExpenseTracker.Services.Dependency;
 
@@ -43,6 +44,7 @@ public static class InfrastructureService
 
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IDebtService, DebtService>();
+        services.AddTransient<ISeedService, SeedService>();
         services.AddTransient<ISnackbarService, SnackbarService>();
         services.AddTransient<ITagService, TagService>();
         services.AddTransient<ITransactionService, TransactionService>();

@@ -15,6 +15,7 @@
 @* Component and Namespace *@
 @using PersonalExpenseTracker
 @using PersonalExpenseTracker.Components
+@using PersonalExpenseTracker.Services.Seed
 @using PersonalExpenseTracker.Components.Layout
 @using PersonalExpenseTracker.Services.Interfaces
 
@@ -26,6 +27,7 @@
 @inject ILocalStorageService LocalStorage
 @inject IAuthenticationService AuthenticationService
 @inject IDebtService DebtService
+@inject ISeedService SeedService
 @inject ISnackbarService SnackbarService
 @inject ITagService TagService
 @inject ITransactionService TransactionService

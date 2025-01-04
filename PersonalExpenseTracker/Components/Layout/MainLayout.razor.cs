@@ -23,10 +23,12 @@ public partial class MainLayout
 
     protected override async Task OnInitializedAsync()
     {
+        SeedData();
+        
         await GetUserDetails();
     }
 
-    public async Task GetUserDetails()
+    private async Task GetUserDetails()
     {
         var userDetails = await UserService.GetUserDetails();
 
@@ -40,6 +42,11 @@ public partial class MainLayout
         
             NavigationManager.NavigateTo(users.Count > 0 ? "/login" : "/register");
         }
+    }
+
+    private void SeedData()
+    {
+        SeedService.SeedDefaultTags();
     }
     
     private void LogoutHandler()
