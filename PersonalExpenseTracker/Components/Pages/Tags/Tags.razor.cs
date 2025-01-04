@@ -116,6 +116,8 @@ public partial class Tags
             OpenCloseInsertTagModal();
 
             await GetAllTags();
+            
+            SnackbarService.ShowSnackbar("Tag successfully created.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {

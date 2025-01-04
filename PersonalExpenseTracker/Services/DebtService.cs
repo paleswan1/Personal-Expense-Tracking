@@ -65,7 +65,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             All = debts.Count,
             Cleared = debts.Count(x => x.Status == DebtStatus.Cleared),
             Pending = debts.Count(x => x.Status != DebtStatus.Cleared && x.DueDate >= DateOnly.FromDateTime(DateTime.Now)),
-            PastDue = debts.Count(x => x.Status != DebtStatus.Cleared && x.DueDate < DateOnly.FromDateTime(DateTime.Now))
+            PastDue = debts.Count(x => x.Status != DebtStatus.Cleared && x.DueDate <= DateOnly.FromDateTime(DateTime.Now))
         };
     }
     
@@ -87,7 +87,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             Source = debt.Source,
             Amount = debt.Amount,
             DueDate = debt.DueDate.ToString("dd.MM.yyyy"),
-            ClearedDate = debt.ClearedDate?.ToString("dd.MM.yyyy"),
+            ClearedDate = debt.ClearedDate?.ToString("dd.MM.yyyy hh:mm:ss tt"),
             Status = debt.Status != DebtStatus.Cleared 
                 ? debt.DueDate < DateOnly.FromDateTime(DateTime.Now) 
                     ? DebtStatus.PastDue 
@@ -159,7 +159,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
             Source = debt.Source,
             Amount = debt.Amount,
             DueDate = debt.DueDate.ToString("dd.MM.yyyy"),
-            ClearedDate = debt.ClearedDate?.ToString("dd.MM.yyyy"),
+            ClearedDate = debt.ClearedDate?.ToString("dd.MM.yyyy hh:mm:ss tt"),
             Status = debt.Status != DebtStatus.Cleared 
                 ? debt.DueDate < DateOnly.FromDateTime(DateTime.Now) 
                     ? DebtStatus.PastDue 
@@ -258,6 +258,7 @@ public class DebtService(IGenericRepository genericRepository, IUserService user
         debtModel.Status = DebtStatus.Cleared;
         debtModel.LastModifiedBy = userDetails.Id;
         debtModel.LastModifiedAt = DateTime.Now;
+        debtModel.ClearedDate = DateTime.Now;
 
         genericRepository.SaveAll(debts, Constants.FilePath.AppDataDirectoryPath, Constants.FilePath.AppDebtsDirectoryPath);
     }

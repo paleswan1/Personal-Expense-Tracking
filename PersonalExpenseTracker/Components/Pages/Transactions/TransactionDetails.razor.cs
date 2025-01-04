@@ -80,8 +80,15 @@ public partial class TransactionDetails
 
     private DateTime? EndDate { get; set; }
 
-    private async Task OnTransactionFilterHandler()
+    private async Task OnTransactionFilterHandler(bool isFilterApplied)
     {
+        if (!isFilterApplied)
+        {
+            FilterTagIdentifiers = [];
+            StartDate = null;
+            EndDate = null;
+        }
+        
         await GetAllTransactions();
     }
     #endregion
@@ -157,6 +164,8 @@ public partial class TransactionDetails
             await GetAllTransactions();
 
             await GetBalanceDetails();
+            
+            SnackbarService.ShowSnackbar("Transaction successfully created.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {
@@ -199,6 +208,8 @@ public partial class TransactionDetails
             OpenCloseUpdateTransactionNoteModal(UpdateTransactionModel.Id);
             
             await GetAllTransactions();
+            
+            SnackbarService.ShowSnackbar("Transaction note successfully updated.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {

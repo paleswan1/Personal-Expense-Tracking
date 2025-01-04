@@ -5,13 +5,13 @@
             <Filter OnFilterApplication="OnDebtFilterHandler">
                 <MudDatePicker @bind-Date="StartDate"
                                Label="Start Date"
-                               Variant="Variant.Outlined"
+                               Variant="Variant.Text"
                                DateFormat="dd.MM.yyyy"
                                Placeholder="Select a Start Date"
                                PickerVariant="PickerVariant.Dialog" />
                 <MudDatePicker @bind-Date="EndDate"
                                Label="End Date"
-                               Variant="Variant.Outlined"
+                               Variant="Variant.Text"
                                DateFormat="dd.MM.yyyy"
                                Placeholder="Select a End Date"
                                PickerVariant="PickerVariant.Dialog" />
@@ -136,7 +136,7 @@
                 <div class="mb-3">
                     <MudDatePicker @bind-Date="InsertDebtModel.DueDate"
                                    Label="Due Date"
-                                   Variant="Variant.Outlined"
+                                   Variant="Variant.Text"
                                    DateFormat="dd.MM.yyyy"
                                    Placeholder="Select a End Date"
                                    PickerVariant="PickerVariant.Dialog" />

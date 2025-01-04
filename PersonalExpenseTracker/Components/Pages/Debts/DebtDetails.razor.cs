@@ -76,8 +76,14 @@ public partial class DebtDetails
 
     private DateTime? EndDate { get; set; }
 
-    private async Task OnDebtFilterHandler()
+    private async Task OnDebtFilterHandler(bool isFilterApplied)
     {
+        if (!isFilterApplied)
+        {
+            StartDate = null;
+            EndDate = null;
+        }
+        
         await GetAllDebts();
     }
     #endregion
@@ -143,6 +149,8 @@ public partial class DebtDetails
             OpenCloseInsertDebtModal();
             
             await GetAllDebts();
+            
+            SnackbarService.ShowSnackbar("Debt successfully created.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {
@@ -175,7 +183,11 @@ public partial class DebtDetails
 
             await OnDebtsCountUpdate.InvokeAsync();
             
+            await GetBalanceAndDebtDetails();
+
             await GetAllDebts();
+            
+            SnackbarService.ShowSnackbar("Debt successfully cleared.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {
