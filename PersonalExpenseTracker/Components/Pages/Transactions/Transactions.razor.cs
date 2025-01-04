@@ -1,28 +1,41 @@
-﻿using PersonalExpenseTracker.DTOs.Transaction;
+﻿using Microsoft.AspNetCore.Components;
+using PersonalExpenseTracker.Components.Layout;
+using PersonalExpenseTracker.DTOs.Transaction;
 
 namespace PersonalExpenseTracker.Components.Pages.Transactions;
 
 public partial class Transactions
 {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        GetTransactionsCount();
+        SetPageTitle();
+        
+        await GetTransactionsCount();
     }
 
+    #region Page Title
+    [CascadingParameter] public MainLayout Layout { get; set; } = new();
+
+    private void SetPageTitle()
+    {
+        Layout.PageTitle = "Transactions";
+    }
+    #endregion
+    
     #region Tab Counts
     private int ActivePanelIndex { get; set; }
     private GetTransactionsCountDto TransactionsCount { get; set; } = new();
 
-    private void GetTransactionsCount()
+    private async Task GetTransactionsCount()
     {
-        TransactionsCount = TransactionService.GetTransactionsCount();
+        TransactionsCount = await TransactionService.GetTransactionsCount();
     }
     #endregion
     
     #region Component Available Trainings Update on Count 
-    private void HandleTransactionCounts()
+    private async Task HandleTransactionCounts()
     {
-        GetTransactionsCount();
+        await GetTransactionsCount();
         
         StateHasChanged();
     }

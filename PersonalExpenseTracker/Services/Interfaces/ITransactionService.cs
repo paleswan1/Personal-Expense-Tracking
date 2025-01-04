@@ -5,9 +5,9 @@ namespace PersonalExpenseTracker.Services.Interfaces;
 
 public interface ITransactionService
 {
-    decimal GetRemainingBalance();
+    Task<decimal> GetRemainingBalance();
     
-    GetTransactionsCountDto GetTransactionsCount();
+    Task<GetTransactionsCountDto> GetTransactionsCount();
 
     GetTransactionDto GetTransactionById(Guid transactionId);
 

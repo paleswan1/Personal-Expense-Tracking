@@ -20,18 +20,18 @@
                         </MudSelectItem>
                     }
                 </MudSelect>
-                <MudDatePicker Label="Start Date"
+                <MudDatePicker @bind-Date="StartDate"
+                               Label="Start Date"
                                Variant="Variant.Outlined"
                                DateFormat="dd.MM.yyyy"
                                Placeholder="Select a Start Date"
-                               PickerVariant="PickerVariant.Dialog"
-                               @bind-Date="StartDate" />
-                <MudDatePicker Label="End Date"
+                               PickerVariant="PickerVariant.Dialog" />
+                <MudDatePicker @bind-Date="EndDate"
+                               Label="End Date"
                                Variant="Variant.Outlined"
                                DateFormat="dd.MM.yyyy"
                                Placeholder="Select a End Date"
-                               PickerVariant="PickerVariant.Dialog"
-                               @bind-Date="EndDate" />
+                               PickerVariant="PickerVariant.Dialog" />
             </Filter>
         </div>
         <div class="filter-right">

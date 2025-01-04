@@ -1,5 +1,4 @@
-﻿using PersonalExpenseTracker.Models.Base;
-using PersonalExpenseTracker.Models.Constant;
+﻿using PersonalExpenseTracker.Models.Constant;
 
 namespace PersonalExpenseTracker.DTOs.Debts;
 
@@ -15,7 +14,7 @@ public class GetDebtDto
 
     public DebtStatus Status { get; set; }
 
-    public DateOnly DueDate { get; set; }
+    public string DueDate { get; set; }
 
-    public DateTime? ClearedDate { get; set; }
+    public string? ClearedDate { get; set; }
 }

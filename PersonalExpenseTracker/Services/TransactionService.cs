@@ -3,27 +3,47 @@ using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Repositories;
 using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.DTOs.Transaction;
-using PersonalExpenseTracker.Filters.Transactions;
 using PersonalExpenseTracker.Services.Interfaces;
+using PersonalExpenseTracker.Filters.Transactions;
 
 namespace PersonalExpenseTracker.Services;
 
 public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
 {
-    public decimal GetRemainingBalance()
+    public async Task<decimal> GetRemainingBalance()
     {
+        var userDetails = await userService.GetUserDetails();
+
+        if (userDetails == null)
+        {
+            throw new Exception("You are not logged in.");
+        }
+        
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
 
+        transactions = transactions.Where(x => x.CreatedBy == userDetails.Id).ToList();
+
         var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
+
+        debts = debts.Where(x => x.CreatedBy == userDetails.Id).ToList();
 
         return transactions.Where(x => x.Type == TransactionType.Inflows).Sum(x => x.Amount) -
                transactions.Where(x => x.Type == TransactionType.Outflows).Sum(x => x.Amount) -
                debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
     }
     
-    public GetTransactionsCountDto GetTransactionsCount()
+    public async Task<GetTransactionsCountDto> GetTransactionsCount()
     {
+        var userDetails = await userService.GetUserDetails();
+
+        if (userDetails == null)
+        {
+            throw new Exception("You are not logged in.");
+        }
+        
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
+
+        transactions = transactions.Where(x => x.CreatedBy == userDetails.Id).ToList();
 
         return new GetTransactionsCountDto()
         {

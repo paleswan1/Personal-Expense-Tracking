@@ -19,7 +19,7 @@ public partial class TransactionDetails
     {
         await GetAllTags();
 
-        GetBalanceDetails();
+        await GetBalanceDetails();
         
         await GetAllTransactions();
     }
@@ -89,9 +89,9 @@ public partial class TransactionDetails
     #region Balance
     private decimal Balance { get; set; }
 
-    private void GetBalanceDetails()
+    private async Task GetBalanceDetails()
     {
-        Balance = TransactionService.GetRemainingBalance();
+        Balance = await TransactionService.GetRemainingBalance();
     }
     #endregion
 
@@ -150,11 +150,13 @@ public partial class TransactionDetails
             
             await TransactionService.InsertTransaction(InsertTransactionModel);
 
+            await OnTransactionsCountUpdate.InvokeAsync();
+
             OpenCloseInsertTransactionModal();
 
             await GetAllTransactions();
 
-            GetBalanceDetails();
+            await GetBalanceDetails();
         }
         catch (Exception ex)
         {
@@ -195,8 +197,6 @@ public partial class TransactionDetails
             await TransactionService.UpdateTransaction(UpdateTransactionModel);
 
             OpenCloseUpdateTransactionNoteModal(UpdateTransactionModel.Id);
-
-            await OnTransactionsCountUpdate.InvokeAsync();
             
             await GetAllTransactions();
         }
