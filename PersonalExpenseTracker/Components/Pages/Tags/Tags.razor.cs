@@ -1,6 +1,8 @@
 ﻿using MudBlazor;
+using Microsoft.AspNetCore.Components;
 using PersonalExpenseTracker.DTOs.Tags;
 using PersonalExpenseTracker.Filters.Tags;
+using PersonalExpenseTracker.Components.Layout;
 
 namespace PersonalExpenseTracker.Components.Pages.Tags;
 
@@ -8,9 +10,20 @@ public partial class Tags
 {
     protected override async Task OnInitializedAsync()
     {
+        SetPageTitle();
+        
         await GetAllTags();
     }
 
+    #region Page Title
+    [CascadingParameter] public MainLayout Layout { get; set; } = new();
+
+    private void SetPageTitle()
+    {
+        Layout.PageTitle = "Tags";
+    }
+    #endregion
+    
     #region Search with Filter and Order
     private string _search = string.Empty;
 
@@ -71,10 +84,12 @@ public partial class Tags
         {
             Search = Search,
             OrderBy = CurrentSortColumn,
-            IsDescending = IsSortDescending
+            IsDescending = IsSortDescending,
         };
 
         TagModels = await TagService.GetAllTags(filterRequest);
+        
+        StateHasChanged();
     }
     #endregion
 

@@ -20,8 +20,10 @@
                     Title
                     <MudIcon Icon="@GetSortIcon(nameof(GetTagDto.Name))" Class="ms-1" />
                 </th>
+                <th>Transaction Type</th>
                 <th>Background Color</th>
                 <th>Text Color</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>
@@ -35,10 +37,25 @@
                         @tag.BackgroundColor
                     </span>
                 </td>
+                <td>@tag.TransactionType</td>
                 <td>
                     <span style="background-color: @tag.TextColor">
                         @tag.TextColor
                     </span>
+                </td>
+                <td>
+                    @if (tag.IsDefault)
+                    {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Secondary">
+                            <span>Default</span>
+                        </MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
+                            <span>Custom</span>
+                        </MudChip>
+                    }
                 </td>
             </tr>
             }
@@ -57,7 +74,7 @@
                     <MudTextField @bind-Value="TagModel.Name" 
                                   Label="Name" 
                                   For="@(() => TagModel.Name)" 
-                                  Variant="Variant.Outlined" 
+                                  Variant="Variant.Text" 
                                   Placeholder="Enter the Tag Name" 
                                   Required="true"
                                   Immediate="true"/>
@@ -67,14 +84,14 @@
                                     ColorPickerView="ColorPickerView.Spectrum"
                                     @bind-Value="@TagModel.BackgroundColor"
                                     For="@(() => TagModel.BackgroundColor)"
-                                    Variant="Variant.Outlined" />
+                                    Variant="Variant.Text" />
                 </div>
                 <div class="mb-3">
                     <MudColorPicker Label="Text Color"
                                     ColorPickerView="ColorPickerView.Spectrum"
                                     @bind-Value="@TagModel.TextColor"
                                     For="@(() => TagModel.TextColor)"
-                                    Variant="Variant.Outlined" />
+                                    Variant="Variant.Text" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertTagModal">Discard</button>

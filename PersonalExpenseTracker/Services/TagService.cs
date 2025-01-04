@@ -27,6 +27,7 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
             Name = tag.Name,
             BackgroundColor = tag.BackgroundColor,
             TextColor = tag.TextColor,
+            IsDefault = tag.IsDefault
         };
 
         return result;
@@ -71,7 +72,8 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
                 Id = tag.Id,
                 Name = tag.Name,
                 BackgroundColor = tag.BackgroundColor,
-                TextColor = tag.TextColor
+                TextColor = tag.TextColor,
+                IsDefault = tag.IsDefault
             }); 
         }
 

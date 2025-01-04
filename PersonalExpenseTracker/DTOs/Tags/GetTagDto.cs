@@ -1,4 +1,6 @@
-﻿namespace PersonalExpenseTracker.DTOs.Tags;
+﻿using PersonalExpenseTracker.Models.Constant;
+
+namespace PersonalExpenseTracker.DTOs.Tags;
 
 public class GetTagDto
 {
@@ -6,7 +8,11 @@ public class GetTagDto
 
     public string Name { get; set; }
 
+    public TransactionType TransactionType { get; set; }
+
     public string BackgroundColor { get; set; }
 
     public string TextColor { get; set; }
+
+    public bool IsDefault { get; set; }
 }

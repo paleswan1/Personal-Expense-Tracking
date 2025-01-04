@@ -10,6 +10,18 @@ namespace PersonalExpenseTracker.Services;
 
 public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
 {
+    public GetTransactionsCountDto GetTransactionsCount()
+    {
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
+
+        return new GetTransactionsCountDto()
+        {
+            AllCount = transactions.Count,
+            InflowsCount = transactions.Count(x => x.Type == TransactionType.Inflows),
+            OutflowsCount = transactions.Count(x => x.Type == TransactionType.Outflows)
+        };
+    }
+    
     public GetTransactionDto GetTransactionById(Guid transactionId)
     {
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
@@ -42,6 +54,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             Type = transaction.Type,
             Source = transaction.Source,
             Amount = transaction.Amount,
+            Date = transaction.CreatedAt.ToString("dd.MM.yyyy hh:mm:ss tt"),
             Tags = tags,
         }; 
     }
@@ -66,6 +79,11 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             transactions = transactions.Where(x => x.Title.Contains(transactionFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
+        if (transactionFilterRequest.TransactionType != null)
+        {
+            transactions = transactions.Where(x => x.Type == transactionFilterRequest.TransactionType).ToList();
+        }
+        
         if (transactionFilterRequest.StartDate != null)
         {
             transactions = transactions.Where(x => x.CreatedAt >= transactionFilterRequest.StartDate).ToList();
@@ -76,13 +94,24 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             transactions = transactions.Where(x => x.CreatedAt <= transactionFilterRequest.EndDate).ToList();
         }
         
+        if (!string.IsNullOrEmpty(transactionFilterRequest.OrderBy))
+        {
+            transactions = transactionFilterRequest.OrderBy switch
+            {
+                "Title" => transactionFilterRequest.IsDescending ? transactions.OrderByDescending(x => x.Title).ToList() : transactions.OrderBy(x => x.Title).ToList(),
+                "Amount" => transactionFilterRequest.IsDescending ? transactions.OrderByDescending(x => x.Amount).ToList() : transactions.OrderBy(x => x.Amount).ToList(),
+                "Date" => transactionFilterRequest.IsDescending ? transactions.OrderByDescending(x => x.CreatedAt).ToList() : transactions.OrderBy(x => x.CreatedAt).ToList(),
+                _ => transactions
+            };
+        }
+        
         var result = new List<GetTransactionDto>();
 
         foreach (var transaction in transactions)
         {
             var transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
 
-            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Contains(tagId)))
+            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Contains(tagId)) || transactionFilterRequest.TagIds.Count == 0)
             {
                 var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
 
@@ -94,6 +123,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
                     Type = transaction.Type,
                     Source = transaction.Source,
                     Amount = transaction.Amount,
+                    Date = transaction.CreatedAt.ToString("dd.MM.yyyy hh:mm:ss tt"),
                     Tags = tags
                 });
             }

@@ -11,7 +11,13 @@ public partial class MainLayout
     
     private bool DrawerOpen { get; set; } = true;
     
-    private MudTheme Theme { get; } = new ();
+    private MudTheme Theme { get; } = new ()
+    {
+        ZIndex = new ZIndex
+        {
+            Drawer = 1300
+        }
+    };
 
     private static bool RightToLeft => false;
 

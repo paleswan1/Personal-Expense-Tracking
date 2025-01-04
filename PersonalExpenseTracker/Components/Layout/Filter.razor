@@ -1,0 +1,23 @@
+﻿<div>
+    <MudMenu @ref="FilterMenu" AnchorOrigin="Origin.BottomRight" LockScroll="true" TransformOrigin="Origin.TopLeft">
+        <ActivatorContent>
+            <MudPaper Outlined="true" Class="filter__icon">
+                <MudTooltip Text="Filter" Arrow="true" Color="Color.Primary">
+                    <MudIconButton Class="drawer-button" Icon="@Icons.Material.Rounded.Filter" Color="Color.Primary" Edge="Edge.Start" />
+                </MudTooltip>
+            </MudPaper>
+        </ActivatorContent>
+        <ChildContent>
+            <div class="filter-dropdown pa-3">
+                <MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="fw-bold mb-6">Filter</MudText>
+                <div class="d-flex flex-column gap-y-4 mb-6">
+                    @ChildContent
+                </div>
+                <div class="d-flex justify-content-end gap-3">
+                    <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="() => OnApplyFilter(false)">Discard</MudButton>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => OnApplyFilter(true)">Submit</MudButton>
+                </div>
+            </div>
+        </ChildContent>
+    </MudMenu>
+</div>
