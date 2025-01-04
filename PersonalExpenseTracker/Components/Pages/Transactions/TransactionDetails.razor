@@ -6,11 +6,37 @@
         <div class="filter-left d-flex align-items-center gap-x-2">
             <MudTextField T="string" @bind-Value="Search" Immediate="true" Placeholder="Search" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="search-input text-dark" />
             <Filter OnFilterApplication="OnTransactionFilterHandler">
-                
+                <MudSelect T="Guid"
+                           Label="Tags"
+                           MultiSelection="true"
+                           @bind-SelectedValues="FilterTagIdentifiers"
+                           Variant="Variant.Text"
+                           AnchorOrigin="Origin.BottomCenter"
+                           ToStringFunc="@(id => Tags.FirstOrDefault(o => o.Id == id)?.Name ?? string.Empty)">
+                    @foreach (var tag in Tags)
+                    {
+                        <MudSelectItem T="Guid" Value="@tag.Id">
+                            @tag.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+                <MudDatePicker Label="Start Date"
+                               Variant="Variant.Outlined"
+                               DateFormat="dd.MM.yyyy"
+                               Placeholder="Select a Start Date"
+                               PickerVariant="PickerVariant.Dialog"
+                               @bind-Date="StartDate" />
+                <MudDatePicker Label="End Date"
+                               Variant="Variant.Outlined"
+                               DateFormat="dd.MM.yyyy"
+                               Placeholder="Select a End Date"
+                               PickerVariant="PickerVariant.Dialog"
+                               @bind-Date="EndDate" />
             </Filter>
         </div>
         <div class="filter-right">
             <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertTransactionModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertTransactionModalOpen">Add Transactions</MudButton>
+            <span>Balance: @Balance</span>
         </div>
     </div>
 

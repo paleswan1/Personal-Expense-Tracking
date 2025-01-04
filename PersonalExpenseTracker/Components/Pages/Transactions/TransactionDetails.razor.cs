@@ -1,9 +1,9 @@
 ﻿using MudBlazor;
 using Microsoft.AspNetCore.Components;
 using PersonalExpenseTracker.DTOs.Tags;
+using PersonalExpenseTracker.Filters.Tags;
 using PersonalExpenseTracker.Models.Constant;
 using PersonalExpenseTracker.DTOs.Transaction;
-using PersonalExpenseTracker.Filters.Tags;
 using PersonalExpenseTracker.Filters.Transactions;
 
 namespace PersonalExpenseTracker.Components.Pages.Transactions;
@@ -18,6 +18,8 @@ public partial class TransactionDetails
     protected override async Task OnInitializedAsync()
     {
         await GetAllTags();
+
+        GetBalanceDetails();
         
         await GetAllTransactions();
     }
@@ -72,7 +74,7 @@ public partial class TransactionDetails
         return IsSortDescending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
 
-    private List<Guid> TagIds { get; set; } = [];
+    private IEnumerable<Guid> FilterTagIdentifiers { get; set; } = [];
     
     private DateTime? StartDate { get; set; }
 
@@ -81,6 +83,15 @@ public partial class TransactionDetails
     private async Task OnTransactionFilterHandler()
     {
         await GetAllTransactions();
+    }
+    #endregion
+
+    #region Balance
+    private decimal Balance { get; set; }
+
+    private void GetBalanceDetails()
+    {
+        Balance = TransactionService.GetRemainingBalance();
     }
     #endregion
 
@@ -94,7 +105,7 @@ public partial class TransactionDetails
             Search = Search,
             OrderBy = CurrentSortColumn,
             IsDescending = IsSortDescending,
-            TagIds = TagIds,
+            TagIds = FilterTagIdentifiers.ToList(),
             StartDate = StartDate,
             EndDate = EndDate,
             TransactionType = TransactionType
@@ -142,6 +153,8 @@ public partial class TransactionDetails
             OpenCloseInsertTransactionModal();
 
             await GetAllTransactions();
+
+            GetBalanceDetails();
         }
         catch (Exception ex)
         {

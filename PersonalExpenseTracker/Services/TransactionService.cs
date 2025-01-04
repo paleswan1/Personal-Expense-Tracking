@@ -10,6 +10,17 @@ namespace PersonalExpenseTracker.Services;
 
 public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
 {
+    public decimal GetRemainingBalance()
+    {
+        var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
+
+        var debts = genericRepository.GetAll<Debt>(Constants.FilePath.AppDebtsDirectoryPath);
+
+        return transactions.Where(x => x.Type == TransactionType.Inflows).Sum(x => x.Amount) -
+               transactions.Where(x => x.Type == TransactionType.Outflows).Sum(x => x.Amount) -
+               debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
+    }
+    
     public GetTransactionsCountDto GetTransactionsCount()
     {
         var transactions = genericRepository.GetAll<Transaction>(Constants.FilePath.AppTransactionsDirectoryPath);
