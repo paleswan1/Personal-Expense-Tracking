@@ -1,32 +1,22 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="dashboard">Personal Expense Tracker</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dashboard" Match="NavLinkMatch.All">
-                <span class="bi bi-grid-door-fill-nav-menu" aria-hidden="true"></span> Dashboard
-            </NavLink>
+﻿<div class="sidebar-inner">
+    <MudNavMenu Class="mud-width-full text-dark">
+        <div class="d-flex gap-1 pa-4 sidebar-header">
+            <MudText Typo="Typo.h6" HtmlTag="h2" Class="connect">Expense</MudText>
+            <MudText Typo="Typo.h6" HtmlTag="h2" Class="fw-bold cms">Tracker</MudText>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="tags">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Tag
-            </NavLink>
+        <div class="px-4 py-6 sidebar-body">
+            <MudNavLink Href="/dashboard" Class="nav-item">
+                Dashboard
+            </MudNavLink>
+            <MudNavLink Href="/tags" Class="nav-item">
+                Tags
+            </MudNavLink>
+            <MudNavLink Href="/transactions" Class="nav-item">
+                Transactions
+            </MudNavLink>
+            <MudNavLink Href="/debts" Class="nav-item">
+                Debts
+            </MudNavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="transactions">
-                <span class="bi bi-grid-square-fill-nav-menu" aria-hidden="true"></span> Transaction
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="debts">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Debts
-            </NavLink>
-        </div>
-    </nav>
+    </MudNavMenu>
 </div>
