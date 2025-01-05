@@ -52,7 +52,7 @@ public static class ExtensionMethods
     /// <returns>Path of the directory that holds all the application data</returns>
     public static string GetAppDirectoryPath()
     {
-        return @"D:\Client Work\22068140 Paleswan Shrestha\Personal-Expense-Tracking\PersonalExpenseTracker\wwwroot\data";
+        return @"C:\Users\ASUS\source\repos\PersonalExpenseTracker";
     }
 
     public static string GetAppUsersFilePath()
