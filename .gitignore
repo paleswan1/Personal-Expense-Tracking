@@ -251,30 +251,7 @@ paket-files/
 .idea/
 *.sln.iml
 
-!appsettings.json
-!appsettings.example.json
-appsettings.Development.json
-appsettings.Staging.json
-appsettings.Production.json
-
-# Docker Files
-!docker-compose.yml
-!docker-compose.example.yml
-docker-compose.Development.yml
-docker-compose.Staging.yml
-docker-compose.Production.yml
-
 build/
-Logs/
-wwwroot/documents/*
-!wwwroot/documents/.gitkeep
 package.json
 global.json
 mono*.blob
-
-# CI/CD
-.DS_Store
-**tags**
-<<<<<<< HEAD
-.ci/preview.sh
-.ci

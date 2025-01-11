@@ -4,6 +4,7 @@ using MudBlazor.Services;
 using Blazored.LocalStorage;
 using Microsoft.Maui.Hosting;
 using System.IdentityModel.Tokens.Jwt;
+using ApexCharts;
 using Cashify.Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +53,17 @@ public static class InfrastructureService
             config.SnackbarConfiguration.VisibleStateDuration = 10000;
             config.SnackbarConfiguration.HideTransitionDuration = 500;
             config.SnackbarConfiguration.ShowTransitionDuration = 500;
+        });
+        #endregion
+
+        #region Apex Charts Services
+        services.AddApexCharts(e =>
+        {
+            e.GlobalOptions = new ApexChartBaseOptions
+            {
+                Debug = true,
+                Theme = new Theme { Palette = PaletteType.Palette6 }
+            };
         });
         #endregion
 

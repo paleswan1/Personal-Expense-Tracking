@@ -271,7 +271,7 @@ code {
 }
 
 .modal-content .btn-close {
-    background: transparent url("/images/icons/cross.svg") no-repeat center/cover;
+    background: transparent url("/images/cross.svg") no-repeat center/cover;
     opacity: 1;
     height: 16px;
     width: 16px;

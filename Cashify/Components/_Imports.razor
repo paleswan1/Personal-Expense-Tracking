@@ -18,6 +18,9 @@
 @using Color = MudBlazor.Color
 @inject IScrollManager ScrollManager
 
+@* MudBlazor Components and Services *@
+@using ApexCharts
+
 @* Setup of Navigation Manger *@
 @inject NavigationManager NavigationManager
 
@@ -28,6 +31,7 @@
 @inject ISourceService SourceService
 @inject IProfileService ProfileService
 @inject ISnackbarService SnackbarService
+@inject IDashboardService DashboardService
 @inject ITransactionService TransactionService
 @inject IAuthenticationService AuthenticationService
 

@@ -47,7 +47,7 @@ public partial class DebtDetails
         await GetAllDebts();
     }
 
-    private string CurrentSortColumn { get; set; } = nameof(GetTransactionDto.Title);
+    private string CurrentSortColumn { get; set; } = nameof(GetDebtDto.Title);
 
     private bool IsSortDescending { get; set; }
 

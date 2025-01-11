@@ -57,7 +57,7 @@
                 <td>@(DebtModels.IndexOf(debt) + 1).</td>
                 <td>@debt.Title</td>
                 <td>@debt.Amount</td>
-                <td>@debt.Source</td>
+                <td>@debt.Source.Title</td>
                 <td>
                     @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
                     {
@@ -168,6 +168,10 @@
             <DataAnnotationsValidator />
             <div class="mb-3">
                 <span>Are you sure you want to clear the debt for @GetDebtModel.Title due on @GetDebtModel.DueDate, pending amount is @GetDebtModel.Amount?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" @onclick="() => OpenCloseClearDebtModal(GetDebtModel.Id)">Discard</button>
+                <button type="submit" class="btn btn-outline-dark">Submit</button>
             </div>
         </EditForm>
     </ModalLayout>

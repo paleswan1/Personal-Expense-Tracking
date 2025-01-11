@@ -27,6 +27,8 @@ public partial class MainLayout
             var users = AuthenticationService.GetUsersCount();
         
             NavigationManager.NavigateTo(users > 0 ? "/login" : "/register");
+            
+            return;
         }
         
         UserDetails = await ProfileService.GetUserDetails();

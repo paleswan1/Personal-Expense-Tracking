@@ -1,7 +1,6 @@
 ﻿using Cashify.Domain.Models;
 using Cashify.Domain.Common.Enum;
 using Cashify.Application.DTOs.Transactions;
-using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Services;
 using Cashify.Application.Interfaces.Repository;
 using Cashify.Application.DTOs.Filters.Transactions;
@@ -136,7 +135,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         {
             var transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
 
-            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds != null && transactionFilterRequest.TagIds.Contains(tagId)))
+            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Count == 0 || transactionFilterRequest.TagIds.Contains(tagId)))
             {
                 var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
 
@@ -168,14 +167,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
 
         if (transaction.Type == TransactionType.Outflow)
         {
-            var transactionModels = genericRepository.GetAll<Transaction>();
-            var debts = genericRepository.GetAll<Debt>();
-
-            var incomingCashFlowAmounts = transactionModels.Where(x => x.Type == TransactionType.Inflow).Sum(x => x.Amount);
+            var remainingBalance = await GetRemainingBalance();
             
-            var clearedDebtAmounts = debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
-
-            if (transaction.Amount > incomingCashFlowAmounts + clearedDebtAmounts)
+            if (transaction.Amount > remainingBalance)
             {
                 throw new Exception("You do not have sufficient balance to perform the following cash outflow transaction.");
             }

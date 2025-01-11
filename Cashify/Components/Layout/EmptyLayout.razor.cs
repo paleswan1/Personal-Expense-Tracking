@@ -1,3 +1,9 @@
-﻿namespace Cashify.Components.Layout;
+﻿using Cashify.Application.DTOs.Theme;
+using MudBlazor;
 
-public partial class EmptyLayout;
+namespace Cashify.Components.Layout;
+
+public partial class EmptyLayout
+{
+    private MudTheme MudTheme { get; } = new LightTheme();
+}
