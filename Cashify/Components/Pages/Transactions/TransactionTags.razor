@@ -63,7 +63,11 @@
 
 @if (IsInsertTagModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Transactions"
+                 Size="lg"
+                 Description="Please fill in the following form to insert your transaction tag record."
+                 Title="Insert Tag"
+                 OnCancel="OpenCloseInsertTagModal">
         <EditForm Model="TagModel" FormName="Insert Tag" OnSubmit="InsertTag">
             <DataAnnotationsValidator />
             <div class="mb-3">

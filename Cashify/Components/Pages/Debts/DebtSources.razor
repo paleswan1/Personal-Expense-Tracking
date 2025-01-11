@@ -50,7 +50,11 @@
 
 @if (IsInsertDebtSourceModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Debts" 
+                 Size="lg"
+                 Description="Please fill in the following form to insert your debt source record."
+                 Title="Insert Debt Source"
+                 OnCancel="OpenCloseInsertDebtSourceModal">
         <EditForm Model="DebtSourceModel" FormName="Insert Debt" OnSubmit="InsertDebtSource">
             <DataAnnotationsValidator />
             <div class="mb-3">

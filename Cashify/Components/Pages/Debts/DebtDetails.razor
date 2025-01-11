@@ -101,7 +101,11 @@
 
 @if (IsInsertDebtModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Debts"
+                 Size="lg"
+                 Description="Please fill in the following form to insert your debt record."
+                 Title="Insert Debt"
+                 OnCancel="OpenCloseInsertDebtModal">
         <EditForm Model="InsertDebtModel" FormName="Insert Debt" OnSubmit="InsertDebt">
             <DataAnnotationsValidator />
             <div class="mb-3">
@@ -155,7 +159,11 @@
 
 @if (IsClearDebtModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Debts"
+                 Size="lg"
+                 Description="Please submit the respective form to clear your debt."
+                 Title="Clear Debt"
+                 OnCancel="() => OpenCloseClearDebtModal(GetDebtModel.Id)">
         <EditForm Model="GetDebtModel" FormName="Clear Debt" OnSubmit="ClearDebt">
             <DataAnnotationsValidator />
             <div class="mb-3">

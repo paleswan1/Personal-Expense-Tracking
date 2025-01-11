@@ -90,7 +90,11 @@
 
 @if (IsInsertTransactionModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Transactions"
+                 Size="lg"
+                 Description="Please fill in the following form to insert your transaction record."
+                 Title="Insert Transaction"
+                 OnCancel="OpenCloseInsertTransactionModal">
         <EditForm Model="InsertTransactionModel" FormName="Insert Tag" OnSubmit="InsertTransaction">
             <DataAnnotationsValidator />
             <div class="mb-3">
@@ -182,7 +186,11 @@
 
 @if (IsUpdateTransactionNoteModalOpen)
 {
-    <ModalLayout Title="Tags" Size="lg">
+    <ModalLayout Module="Transactions"
+                 Size="lg"
+                 Description="Please fill in the following form to update your transaction note."
+                 Title="Update Transaction Note"
+                 OnCancel="() => OpenCloseUpdateTransactionNoteModal(UpdateTransactionModel.Id)">
         <EditForm Model="UpdateTransactionModel" FormName="Update Note" OnSubmit="UpdateTransactionNote">
             <DataAnnotationsValidator />
             <div class="mb-3">
