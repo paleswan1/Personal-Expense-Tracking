@@ -251,30 +251,11 @@ paket-files/
 .idea/
 *.sln.iml
 
-# Application Configurations
 !appsettings.json
 !appsettings.example.json
 appsettings.Development.json
 appsettings.Staging.json
 appsettings.Production.json
-
-!menu.json
-!menu.example.json
-menu.Development.json
-menu.Staging.json
-menu.Production.json
-
-!client.json
-!client.example.json
-client.Development.json
-client.Staging.json
-client.Production.json
-
-!questionnaire.json
-!questionnaire.example.json
-questionnaire.Development.json
-questionnaire.Staging.json
-questionnaire.Production.json
 
 # Docker Files
 !docker-compose.yml
@@ -283,9 +264,10 @@ docker-compose.Development.yml
 docker-compose.Staging.yml
 docker-compose.Production.yml
 
-# Build and Log Files
 build/
 Logs/
+wwwroot/documents/*
+!wwwroot/documents/.gitkeep
 package.json
 global.json
 mono*.blob
@@ -296,21 +278,3 @@ mono*.blob
 <<<<<<< HEAD
 .ci/preview.sh
 .ci
-
-# Ignore image files
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.bmp
-*.tiff
-*.ico
-*.svg
-
-# Ignore document files
-*.doc
-*.docx
-*.xls
-*.xlsx
-*.pdf
-*.pptx
