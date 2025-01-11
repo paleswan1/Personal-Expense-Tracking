@@ -1,18 +1,17 @@
-﻿using MudBlazor;
-using Cashify.Application.DTOs.Sources;
-using Cashify.Application.DTOs.Filters.Sources;
+﻿using Cashify.Application.DTOs.Filters.Tags;
+using Cashify.Application.DTOs.Tags;
+using MudBlazor;
 
-namespace Cashify.Components.Pages.Debts;
+namespace Cashify.Components.Pages.Transactions;
 
-public partial class DebtSources
+public partial class TransactionTags
 {
     protected override async Task OnInitializedAsync()
     {
-        await GetAllDebtSources();
+        await GetAllTags();
     }
 
     #region Search with Filter and Order
-
     private string _search = string.Empty;
 
     private string Search
@@ -30,10 +29,10 @@ public partial class DebtSources
     {
         Search = search;
 
-        await GetAllDebtSources();
+        await GetAllTags();
     }
 
-    private string CurrentSortColumn { get; set; } = nameof(GetSourceDto.Title);
+    private string CurrentSortColumn { get; set; } = nameof(GetTagDto.Title);
     
     private bool IsSortDescending { get; set; }
 
@@ -49,7 +48,7 @@ public partial class DebtSources
             IsSortDescending = false;
         }
 
-        await GetAllDebtSources();
+        await GetAllTags();
     }
 
     private string GetSortIcon(string column)
@@ -61,53 +60,51 @@ public partial class DebtSources
 
         return IsSortDescending ? Icons.Material.Filled.ArrowDownward : Icons.Material.Filled.ArrowUpward;
     }
-
     #endregion
 
-    #region DebtSource Details
+    #region Tag Details
+    private List<GetTagDto> TagModels { get; set; } = new();
 
-    private List<GetSourceDto> DebtSourceModels { get; set; } = new();
-
-    private async Task GetAllDebtSources()
+    private async Task GetAllTags()
     {
-        var filterRequest = new GetSourceFilterRequestDto
+        var filterRequest = new GetTagFilterRequestDto
         {
             Search = Search,
             OrderBy = CurrentSortColumn,
             IsDescending = IsSortDescending,
         };
 
-        DebtSourceModels = await SourceService.GetAllSources(filterRequest);
-
+        TagModels = await TagService.GetAllTags(filterRequest);
+        
         StateHasChanged();
     }
-
     #endregion
 
-    #region Debt Source Creation
-    private bool IsInsertDebtSourceModalOpen { get; set; }
-    private InsertSourceDto DebtSourceModel { get; set; } = new();
+    #region Tag Creation
+    private bool IsInsertTagModalOpen { get; set; }
 
-    private void OpenCloseInsertDebtSourceModal()
+    private InsertTagDto TagModel { get; set; } = new();
+
+    private void OpenCloseInsertTagModal()
     {
-        IsInsertDebtSourceModalOpen = !IsInsertDebtSourceModalOpen;
+        IsInsertTagModalOpen = !IsInsertTagModalOpen;
 
-        DebtSourceModel = new InsertSourceDto();
+        TagModel = new InsertTagDto();
 
         StateHasChanged();
     }
 
-    private async Task InsertDebtSource()
+    private async Task InsertTag()
     {
         try
         {
-            await SourceService.InsertSource(DebtSourceModel);
+            await TagService.InsertTag(TagModel);
 
-            OpenCloseInsertDebtSourceModal();
+            OpenCloseInsertTagModal();
 
-            await GetAllDebtSources();
-
-            SnackbarService.ShowSnackbar("Source successfully created.", Severity.Success, Variant.Outlined);
+            await GetAllTags();
+            
+            SnackbarService.ShowSnackbar("Tag successfully created.", Severity.Success, Variant.Outlined);
         }
         catch (Exception ex)
         {

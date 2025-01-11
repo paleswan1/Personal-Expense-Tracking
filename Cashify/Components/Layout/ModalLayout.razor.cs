@@ -26,29 +26,7 @@ public partial class ModalLayout<T> : ComponentBase where T : class
 
     [Parameter] public string Alignment { get; set; } = "End";
 
-    [Parameter] public EventCallback<bool> OnSave { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
     
-    [Parameter] public bool IsDisabled { get; set; }
-
     private T ModelInstance { get; set; } = Activator.CreateInstance<T>();
-    
-    /// <summary>
-    /// Action method to invoke modal cancellation
-    /// </summary>
-    /// <returns></returns>
-    private Task ModalCancel()
-    {
-        return OnSave.InvokeAsync(true);
-    }
-    
-    /// <summary>
-    /// Action method to invoke modal submit
-    /// </summary>
-    /// <returns></returns>
-    private Task ModalSubmit()
-    {
-        IsDisabled = true;
-        
-        return OnSave.InvokeAsync(false);
-    }
 }

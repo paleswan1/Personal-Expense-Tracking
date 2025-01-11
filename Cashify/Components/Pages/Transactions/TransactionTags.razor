@@ -1,4 +1,4 @@
-﻿@page "/debt-sources"
+﻿@page "/transaction-tags"
 
 <div class="inner-padding">
     <div class="filter d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
@@ -6,9 +6,7 @@
             <MudTextField T="string" @bind-Value="Search" Immediate="true" Placeholder="Search" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="search-input text-dark" />
         </div>
         <div class="filter-right">
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertDebtSourceModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertDebtSourceModalOpen">
-                Add Debt Source
-            </MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertTagModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertTagModalOpen">Add Tags</MudButton>
         </div>
     </div>
 
@@ -23,23 +21,38 @@
                 </th>
                 <th>Background Color</th>
                 <th>Text Color</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>
-            @foreach (var debtSource in DebtSourceModels)
+            @foreach (var tag in TagModels)
             {
             <tr>
-                <td>@(DebtSourceModels.IndexOf(debtSource) + 1).</td>
-                <td>@debtSource.Title</td>
+                <td>@(TagModels.IndexOf(tag) + 1).</td>
+                <td>@tag.Title</td>
                 <td>
-                    <span style="background-color: @debtSource.BackgroundColor">
-                        @debtSource.BackgroundColor
+                    <span style="background-color: @tag.BackgroundColor">
+                        @tag.BackgroundColor
                     </span>
                 </td>
                 <td>
-                    <span style="background-color: @debtSource.TextColor">
-                        @debtSource.TextColor
+                    <span style="background-color: @tag.TextColor">
+                        @tag.TextColor
                     </span>
+                </td>
+                <td>
+                    @if (tag.IsDefault)
+                    {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Secondary">
+                            <span>Default</span>
+                        </MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
+                            <span>Custom</span>
+                        </MudChip>
+                    }
                 </td>
             </tr>
             }
@@ -48,15 +61,15 @@
     </div>
 </div>
 
-@if (IsInsertDebtSourceModalOpen)
+@if (IsInsertTagModalOpen)
 {
     <ModalLayout Title="Tags" Size="lg">
-        <EditForm Model="DebtSourceModel" FormName="Insert Debt" OnSubmit="InsertDebtSource">
+        <EditForm Model="TagModel" FormName="Insert Tag" OnSubmit="InsertTag">
             <DataAnnotationsValidator />
             <div class="mb-3">
-                <MudTextField @bind-Value="DebtSourceModel.Title" 
+                <MudTextField @bind-Value="TagModel.Title" 
                               Label="Name" 
-                              For="@(() => DebtSourceModel.Title)" 
+                              For="@(() => TagModel.Title)" 
                               Variant="Variant.Text" 
                               Placeholder="Enter the Tag Name" 
                               Required="true"
@@ -65,19 +78,19 @@
             <div class="mb-3">
                 <MudColorPicker Label="Background Color"
                                 ColorPickerView="ColorPickerView.Spectrum"
-                                @bind-Value="@DebtSourceModel.BackgroundColor"
-                                For="@(() => DebtSourceModel.BackgroundColor)"
+                                @bind-Value="@TagModel.BackgroundColor"
+                                For="@(() => TagModel.BackgroundColor)"
                                 Variant="Variant.Text" />
             </div>
             <div class="mb-3">
                 <MudColorPicker Label="Text Color"
                                 ColorPickerView="ColorPickerView.Spectrum"
-                                @bind-Value="@DebtSourceModel.TextColor"
-                                For="@(() => DebtSourceModel.TextColor)"
+                                @bind-Value="@TagModel.TextColor"
+                                For="@(() => TagModel.TextColor)"
                                 Variant="Variant.Text" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertDebtSourceModal">Discard</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertTagModal">Discard</button>
                 <button type="submit" class="btn btn-outline-dark">Submit</button>
             </div>
         </EditForm>

@@ -6,6 +6,7 @@ using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.DTOs.Filters.Debts;
 using Cashify.Application.Interfaces.Services;
 using Cashify.Application.Interfaces.Repository;
+using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 

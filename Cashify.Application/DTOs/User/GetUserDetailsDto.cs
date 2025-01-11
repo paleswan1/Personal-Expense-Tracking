@@ -1,6 +1,6 @@
 ﻿namespace Cashify.Application.DTOs.User;
 
-public class UserDetailsDto
+public class GetUserDetailsDto
 {
     public Guid Id { get; set; }
 

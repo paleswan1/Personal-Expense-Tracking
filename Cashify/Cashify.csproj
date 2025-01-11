@@ -78,10 +78,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <MauiImage Include="wwwroot\login.svg" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Include="wwwroot\login.svg" />
     </ItemGroup>
 

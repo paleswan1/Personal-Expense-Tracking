@@ -22,8 +22,13 @@
 @inject NavigationManager NavigationManager
 
 @* Injection of Services and Modules *@
-@inject ISnackbarService SnackbarService
+@inject ITagService TagService
 @inject IUserService UserService
+@inject IDebtService DebtService
+@inject ISourceService SourceService
+@inject IProfileService ProfileService
+@inject ISnackbarService SnackbarService
+@inject ITransactionService TransactionService
 @inject IAuthenticationService AuthenticationService
 
 @* Blazor Components and Services *@
@@ -32,3 +37,8 @@
 @using Cashify.Components.Layout
 @using Cashify.Application.Interfaces.Services
 @using Cashify.Application.Interfaces.Utility
+
+@using Cashify.Domain.Common.Enum
+@using Cashify.Application.DTOs.Tags
+@using Cashify.Application.DTOs.Transactions
+@using IUserService = Cashify.Application.Interfaces.Utility.IUserService

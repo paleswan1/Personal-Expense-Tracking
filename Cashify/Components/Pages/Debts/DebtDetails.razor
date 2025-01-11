@@ -1,0 +1,166 @@
+﻿<div class="inner-padding">
+    <div class="filter d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+        <div class="filter-left d-flex align-items-center gap-x-2">
+            <MudTextField T="string" @bind-Value="Search" Immediate="true" Placeholder="Search" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="search-input text-dark" />
+            <Filter OnFilterApplication="OnDebtFilterHandler">
+                <MudDatePicker @bind-Date="StartDate"
+                               Label="Start Date"
+                               Variant="Variant.Text"
+                               DateFormat="dd.MM.yyyy"
+                               Placeholder="Select a Start Date"
+                               PickerVariant="PickerVariant.Dialog" />
+                <MudDatePicker @bind-Date="EndDate"
+                               Label="End Date"
+                               Variant="Variant.Text"
+                               DateFormat="dd.MM.yyyy"
+                               Placeholder="Select a End Date"
+                               PickerVariant="PickerVariant.Dialog" />
+            </Filter>
+        </div>
+        <div class="filter-right">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertDebtModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertDebtModalOpen">Add Debts</MudButton>
+            <span>Balance: @Balance</span>
+            <span>Pending Debt Amount: @PendingDebtAmount</span>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table country-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th @onclick="() => ChangeSorting(nameof(GetDebtModel.Title))" style="cursor: pointer;">
+                    Title
+                    <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.Title))" Class="ms-1" />
+                </th>
+                <th @onclick="() => ChangeSorting(nameof(GetDebtModel.Amount))" style="cursor: pointer;">
+                    Amount
+                    <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.Amount))" Class="ms-1" />
+                </th>
+                <th>Source</th>
+                <th>Status</th>
+                <th @onclick="() => ChangeSorting(nameof(GetDebtModel.DueDate))" style="cursor: pointer;">
+                    Due Date
+                    <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.DueDate))" Class="ms-1" />
+                </th>
+                <th @onclick="() => ChangeSorting(nameof(GetDebtModel.ClearedDate))" style="cursor: pointer;">
+                    Cleared Date
+                    <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.ClearedDate))" Class="ms-1" />
+                </th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var debt in DebtModels)
+            {
+            <tr>
+                <td>@(DebtModels.IndexOf(debt) + 1).</td>
+                <td>@debt.Title</td>
+                <td>@debt.Amount</td>
+                <td>@debt.Source</td>
+                <td>
+                    @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
+                    {
+                        if (debt.Status == Domain.Common.Enum.DebtStatus.Pending)
+                        {
+                            <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Warning">
+                                <span>Pending</span>
+                            </MudChip>
+                        }
+                        else
+                        {
+                            if (debt.Status == Domain.Common.Enum.DebtStatus.Overdue)
+                            {
+                                <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Error">
+                                    <span>Overdue</span>
+                                </MudChip>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
+                            <span>Cleared</span>
+                        </MudChip>
+                    }
+                </td>
+                <td>@debt.DueDate</td>
+                <td>@debt.ClearedDate</td>
+                <td>
+                    @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
+                    {
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="() => OpenCloseClearDebtModal(debt.Id)" StartIcon="@Icons.Material.Filled.Add" Disabled="IsClearDebtModalOpen">Clear Debt</MudButton>
+                    }
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (IsInsertDebtModalOpen)
+{
+    <ModalLayout Title="Tags" Size="lg">
+        <EditForm Model="InsertDebtModel" FormName="Insert Debt" OnSubmit="InsertDebt">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <MudTextField @bind-Value="InsertDebtModel.Title" 
+                              Label="Title" 
+                              For="@(() => InsertDebtModel.Title)" 
+                              Variant="Variant.Text" 
+                              Placeholder="Enter the Debt Title" 
+                              Required="true"
+                              Immediate="true" />
+            </div>
+            <div class="mb-3">
+                <MudTextField @bind-Value="InsertDebtModel.Amount"
+                              Label="Amount"
+                              For="@(() => InsertDebtModel.Amount)"
+                              Variant="Variant.Text"
+                              Placeholder="Enter the Debt Amount"
+                              Required="true"
+                              InputType="InputType.Number"
+                              Immediate="true" />
+            </div>
+            <div class="mb-3">
+                <MudSelect T="@(Guid)"
+                           @bind-Value="InsertDebtModel.SourceId"
+                           Label="Source"
+                           Required="true"
+                           Variant="Variant.Text"
+                           AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@(Guid.Empty)">Select a Source</MudSelectItem>
+                    @foreach(var source in DebtSourceModels)
+                    {
+                        <MudSelectItem Value="@source.Id">@source.Title</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+            <div class="mb-3">
+                <MudDatePicker @bind-Date="InsertDebtModel.DueDate"
+                               Label="Due Date"
+                               Variant="Variant.Text"
+                               DateFormat="dd.MM.yyyy"
+                               Placeholder="Select a End Date"
+                               PickerVariant="PickerVariant.Dialog" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertDebtModal">Discard</button>
+                <button type="submit" class="btn btn-outline-dark">Submit</button>
+            </div>
+        </EditForm>
+    </ModalLayout>
+}
+
+@if (IsClearDebtModalOpen)
+{
+    <ModalLayout Title="Tags" Size="lg">
+        <EditForm Model="GetDebtModel" FormName="Clear Debt" OnSubmit="ClearDebt">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <span>Are you sure you want to clear the debt for @GetDebtModel.Title due on @GetDebtModel.DueDate, pending amount is @GetDebtModel.Amount?</span>
+            </div>
+        </EditForm>
+    </ModalLayout>
+}
