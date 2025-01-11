@@ -1,0 +1,16 @@
+﻿<MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu>
+        <MudText Typo="Typo.h6" Class="px-4">Expense Tracker</MudText>
+        <MudDivider Class="my-2"/>
+        <MudNavLink Href="/dashboard">Dashboard</MudNavLink>
+        <MudNavGroup Title="Modules" Expanded="true">
+            <MudNavLink Href="/transaction-tags">Transaction Tags</MudNavLink>
+            <MudNavLink Href="/debt-sources">Debt Sources</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Transactions" Expanded="true">
+            <MudNavLink Href="/transactions">Transactions</MudNavLink>
+            <MudNavLink Href="/debts">Debts</MudNavLink>
+        </MudNavGroup>
+        <MudNavLink OnClick="Logout">Logout</MudNavLink>
+    </MudNavMenu>
+</MudPaper>

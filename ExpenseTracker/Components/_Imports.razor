@@ -1,0 +1,34 @@
+﻿@* HTTP Handling and JSON Serialization Contexts   *@
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@* Blazor Components and Routing *@
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+@* Blazor Service for Handling JavaScript Interop *@
+@using Microsoft.JSInterop
+
+@* MudBlazor Components and Services *@
+@using MudBlazor
+@inject IScrollManager ScrollManager
+@using Color = MudBlazor.Color
+@using Align = MudBlazor.Align
+@using Size = MudBlazor.Size
+
+@* Setup of Navigation Manger *@
+@inject NavigationManager NavigationManager
+
+@* Injection of Services and Modules *@
+@inject ISnackbarService SnackbarService
+@inject IUserService UserService
+@inject IAuthenticationService AuthenticationService
+
+@* Blazor Components and Services *@
+@using ExpenseTracker
+@using ExpenseTracker.Components
+@using ExpenseTracker.Components.Layout
+@using ExpenseTracker.Application.Interfaces.Services
+@using ExpenseTracker.Application.Interfaces.Utility

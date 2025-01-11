@@ -1,0 +1,84 @@
+.register-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.register-left {
+    width: 50%;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.register-form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.mb-2, .mb-4, .mt-4 {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #7c5cfc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    opacity: 0.9;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+
+.register-right {
+    width: 60%;
+    padding: 40px;
+    background-color: #f8f9ff;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.image-section {
+    width: 50%;
+    background-size: cover;
+    background-color: #f8f9ff;
+}

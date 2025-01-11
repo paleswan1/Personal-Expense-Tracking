@@ -1,0 +1,69 @@
+﻿@page "/transactions"
+
+<body>
+<div class="container">
+    <div class="main-content">
+        <div class="header">
+            <h2>Transactions</h2>
+            <div class="balance">Balance: Rs 1000</div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text"
+                   class="search-input"
+                   placeholder="Search by title" />
+            <button class="filter-btn">
+                <svg width="16"
+                     height="16"
+                     fill="none"
+                     stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path d="M3 4h18M6 12h12M9 20h6" />
+                </svg>
+            </button>
+            <button class="add-new-btn">Add new +</button>
+        </div>
+
+        <table class="transaction-table">
+            <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Date</th>
+                <th>Transaction</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Tags</th>
+                <th>Source</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>6/3/22</td>
+                <td>Salary</td>
+                <td>Inflow</td>
+                <td>2600</td>
+                <td><span class="tag">Income</span></td>
+                <td>Gain</td>
+                <td>
+                    <button class="action-btn">Edit</button>
+                    <button class="action-btn">Delete</button>
+                </td>
+            </tr>
+            <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button class="page-btn">Back</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">4</button>
+            <button class="page-btn">5</button>
+            <button class="page-btn">Next</button>
+        </div>
+    </div>
+</div>
+</body>
