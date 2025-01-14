@@ -62,15 +62,14 @@
 
     <ItemGroup>
       <AndroidResource Remove="wwwroot\css\NewFolder\**" />
-      <AndroidResource Remove="wwwroot\NewFolder\**" />
       <Compile Remove="wwwroot\css\NewFolder\**" />
-      <Compile Remove="wwwroot\NewFolder\**" />
+      <Compile Remove="wwwroot\NewFolder1\**" />
       <Content Remove="wwwroot\css\NewFolder\**" />
-      <Content Remove="wwwroot\NewFolder\**" />
+      <Content Remove="wwwroot\NewFolder1\**" />
       <EmbeddedResource Remove="wwwroot\css\NewFolder\**" />
-      <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+      <EmbeddedResource Remove="wwwroot\NewFolder1\**" />
       <None Remove="wwwroot\css\NewFolder\**" />
-      <None Remove="wwwroot\NewFolder\**" />
+      <None Remove="wwwroot\NewFolder1\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -90,6 +89,14 @@
     <ItemGroup>
       <ProjectReference Include="..\Cashify.Application\Cashify.Application.csproj" />
       <ProjectReference Include="..\Cashify.Infrastructure\Cashify.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PRIResource Remove="wwwroot\NewFolder1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\data\" />
     </ItemGroup>
 
 </Project>

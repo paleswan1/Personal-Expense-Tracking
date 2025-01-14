@@ -1,45 +1,41 @@
 ﻿@page "/login"
 @layout EmptyLayout
 
-<div class="vh-100 d-flex justify-content-center align-items-center">
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <div class="border border-3 border-secondary rounded-2">
-                    <div class="card bg-white shadow-lg">
-                        <div class="card-body p-5">
-                            <EditForm Model="LoginRequest" FormName="Registration" OnSubmit="LoginHandler">
-                                <DataAnnotationsValidator />
-                                <h2 class="fw-bold mb-2">Login</h2>
-                                <p class="mb-4">Please login into your account via username and password.</p>
-                                <div class="mb-3">
-                                    <MudTextField @bind-Value="LoginRequest.Username"
-                                                  Label="Username"
-                                                  For="@(() => LoginRequest.Username)"
-                                                  Variant="Variant.Outlined"
-                                                  Placeholder="Enter your username"
-                                                  Immediate="true"/>
-                                </div>
-                                <div class="mb-3">
-                                    <MudTextField @bind-Value="LoginRequest.Password"
-                                                  Label="Password"
-                                                  For="@(() => LoginRequest.Password)"
-                                                  Variant="Variant.Outlined"
-                                                  InputType="InputType.Password"
-                                                  Placeholder="Enter your password"
-                                                  Immediate="true"/>
-                                </div>
-                                <div class="mt-4 d-grid">
-                                    <button class="btn btn-outline-dark" type="submit">Login</button>
-                                    <div class="mt-4 d-flex justify-content-center">
-                                        <p class="mb-4">Create a new account,</p>
-                                        <a href="register">&nbsp; Click here.</a>
-                                    </div>
-                                </div>
-                            </EditForm>
-                        </div>
+<div class="login-container">
+    <div class="content-wrapper">
+        <!-- Right Section (Login Form) -->
+        <div class="right-section">
+            <div class="card">
+                <h2 class="logo-title">C A S H I F Y</h2>
+                <h3 class="form-title">Login</h3>
+                <p class="form-description">Please log in to your account.</p>
+                <EditForm Model="LoginRequest" OnSubmit="LoginHandler">
+                    <DataAnnotationsValidator />
+                    <div class="input-group">
+                        <label for="username" class="form-label required">Username</label>
+                        <MudTextField @bind-Value="LoginRequest.Username"
+                                      Label="Username"
+                                      Variant="Variant.Outlined"
+                                      Placeholder="Enter your username"
+                                      Immediate="true" />
                     </div>
-                </div>
+
+                    <div class="input-group">
+                        <label for="password" class="form-label required">Password</label>
+                        <MudTextField @bind-Value="LoginRequest.Password"
+                                      Label="Password"
+                                      Variant="Variant.Outlined"
+                                      InputType="InputType.Password"
+                                      Placeholder="*******"
+                                      Immediate="true" />
+                    </div>
+
+                    <button type="submit" class="submit-btn">Login</button>
+
+                    <div class="register-link">
+                        <p>Don't have an account? <a href="register" class="register-link-text">Register</a></p>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>

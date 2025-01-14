@@ -4,7 +4,7 @@ public abstract class Constants
 {
     public abstract class RootDirectory
     {
-        public static string Path => @"D:\Client Work\22068140 Paleswan Shrestha\Application Development\Personal-Expense-Tracking\Cashify\wwwroot\data";
+        public static string Path => @"C:\Users\ASUS\Desktop\Personal-Expense-Tracking\Cashify\wwwroot\data";
     }
     
     public abstract class ModelPath

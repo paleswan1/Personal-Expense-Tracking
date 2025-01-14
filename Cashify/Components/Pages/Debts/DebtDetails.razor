@@ -19,8 +19,12 @@
         </div>
         <div class="filter-right">
             <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertDebtModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertDebtModalOpen">Add Debts</MudButton>
-            <span>Balance: @Balance</span>
-            <span>Pending Debt Amount: @PendingDebtAmount</span>
+            <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
+                <span class="text-md">Balance: @Balance.ToString("C")</span>
+            </MudChip>
+            <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Warning">
+                <span class="text-md">Pending Debt Amount: @PendingDebtAmount.ToString("C")</span>
+            </MudChip>
         </div>
     </div>
 
@@ -56,7 +60,7 @@
             <tr>
                 <td>@(DebtModels.IndexOf(debt) + 1).</td>
                 <td>@debt.Title</td>
-                <td>@debt.Amount</td>
+                <td>@debt.Amount.ToString("C")</td>
                 <td>@debt.Source.Title</td>
                 <td>
                     @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
@@ -150,8 +154,8 @@
                                PickerVariant="PickerVariant.Dialog" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertDebtModal">Discard</button>
-                <button type="submit" class="btn btn-outline-dark">Submit</button>
+                <button type="button" class="btn btn-discard" @onclick="@OpenCloseInsertDebtModal">Discard</button>
+                <button type="submit" class="btn btn-submit">Submit</button>
             </div>
         </EditForm>
     </ModalLayout>
@@ -170,8 +174,8 @@
                 <span>Are you sure you want to clear the debt for @GetDebtModel.Title due on @GetDebtModel.DueDate, pending amount is @GetDebtModel.Amount?</span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @onclick="() => OpenCloseClearDebtModal(GetDebtModel.Id)">Discard</button>
-                <button type="submit" class="btn btn-outline-dark">Submit</button>
+                <button type="button" class="btn btn-discard" @onclick="() => OpenCloseClearDebtModal(GetDebtModel.Id)">Discard</button>
+                <button type="submit" class="btn btn-submit">Submit</button>
             </div>
         </EditForm>
     </ModalLayout>

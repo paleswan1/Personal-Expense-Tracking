@@ -1,15 +1,29 @@
-﻿<MudPaper Width="250px" Class="py-3" Elevation="0">
+﻿<MudPaper Width="250px" Height="100vh" Class="py-3" Elevation="0">
     <MudNavMenu>
-        <MudText Typo="Typo.h6" Class="px-4">Expense Tracker</MudText>
-        <MudDivider Class="my-2"/>
-        <MudNavLink Href="/dashboard">Dashboard</MudNavLink>
+        <MudText Typo="Typo.h6" Class="px-4 cashify-gradient" style="color: #FF6E00">
+            C A S H I F Y
+        </MudText>
+        <MudDivider Class="my-2" />
+        <MudNavLink Href="/dashboard" Class="d-flex align-items-center">
+            <span>Dashboard</span>
+        </MudNavLink>
+
         <MudNavGroup Title="Modules" Expanded="true">
-            <MudNavLink Href="/transaction-tags">Transaction Tags</MudNavLink>
-            <MudNavLink Href="/debt-sources">Debt Sources</MudNavLink>
+            <MudNavLink Href="/transaction-tags" Class="d-flex align-items-center">
+                <span>Transaction Tags</span>
+            </MudNavLink>
+            <MudNavLink Href="/debt-sources" Class="d-flex align-items-center">
+                <span>Debt Sources</span>
+            </MudNavLink>
         </MudNavGroup>
+
         <MudNavGroup Title="Transactions" Expanded="true">
-            <MudNavLink Href="/transactions">Transactions</MudNavLink>
-            <MudNavLink Href="/debts">Debts</MudNavLink>
+            <MudNavLink Href="/transactions" Class="d-flex align-items-center">
+                <span>Transactions</span>
+            </MudNavLink>
+            <MudNavLink Href="/debts" Class="d-flex align-items-center">
+                <span>Debts</span>
+            </MudNavLink>
         </MudNavGroup>
     </MudNavMenu>
 </MudPaper>

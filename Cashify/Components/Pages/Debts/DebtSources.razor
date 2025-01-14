@@ -32,12 +32,12 @@
                 <td>@(DebtSourceModels.IndexOf(debtSource) + 1).</td>
                 <td>@debtSource.Title</td>
                 <td>
-                    <span style="background-color: @debtSource.BackgroundColor">
+                            <span style="background-color: @debtSource.BackgroundColor; color: #fff; padding: 5px 10px; border-radius: 10px; display: inline-block; ">
                         @debtSource.BackgroundColor
                     </span>
                 </td>
                 <td>
-                    <span style="background-color: @debtSource.TextColor">
+                            <span style="background-color: @debtSource.TextColor; color: #fff; padding: 5px 10px; border-radius: 10px; display: inline-block; ">
                         @debtSource.TextColor
                     </span>
                 </td>
@@ -81,8 +81,8 @@
                                 Variant="Variant.Text" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertDebtSourceModal">Discard</button>
-                <button type="submit" class="btn btn-outline-dark">Submit</button>
+                <button type="button" class="btn btn-discard" @onclick="@OpenCloseInsertDebtSourceModal">Discard</button>
+                <button type="submit" class="btn btn-submit">Submit</button>
             </div>
         </EditForm>
     </ModalLayout>

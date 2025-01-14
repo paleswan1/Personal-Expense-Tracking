@@ -31,14 +31,14 @@
                 <td>@(TagModels.IndexOf(tag) + 1).</td>
                 <td>@tag.Title</td>
                 <td>
-                    <span style="background-color: @tag.BackgroundColor">
-                        @tag.BackgroundColor
-                    </span>
+                    <span style="background-color: @tag.BackgroundColor; color: #fff; padding: 5px 10px; border-radius: 10px; display: inline-block;">
+                           @tag.BackgroundColor
+                     </span>
                 </td>
                 <td>
-                    <span style="background-color: @tag.TextColor">
-                        @tag.TextColor
-                    </span>
+                    <span style="background-color: @tag.TextColor; color: #fff; padding: 5px 10px; border-radius: 10px; display: inline-block;">
+                         @tag.TextColor
+                     </span>
                 </td>
                 <td>
                     @if (tag.IsDefault)
@@ -94,8 +94,8 @@
                                 Variant="Variant.Text" />
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" @onclick="@OpenCloseInsertTagModal">Discard</button>
-                <button type="submit" class="btn btn-outline-dark">Submit</button>
+                <button type="button" class="btn btn-discard" @onclick="@OpenCloseInsertTagModal">Discard</button>
+                <button type="submit" class="btn btn-submit">Submit</button>
             </div>
         </EditForm>
     </ModalLayout>

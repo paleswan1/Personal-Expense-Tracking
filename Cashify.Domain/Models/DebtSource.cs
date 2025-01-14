@@ -12,3 +12,4 @@ public class DebtSource : BaseEntity
     
     public string TextColor { get; set; } = string.Empty;
 }
+

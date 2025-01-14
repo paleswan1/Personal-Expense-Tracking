@@ -1,60 +1,43 @@
 ﻿@page "/register"
 @layout EmptyLayout
 
-<div class="vh-100 d-flex justify-content-center align-items-center">
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <div class="border border-3 border-secondary rounded-2">
-                    <div class="card bg-white shadow-lg">
-                        <div class="card-body p-5">
-                            <EditForm Model="RegistrationRequest" FormName="Registration" OnSubmit="RegisterHandler">
-                                <DataAnnotationsValidator />
-                                <h2 class="fw-bold mb-2">Registration</h2>
-                                <p class="mb-4">Please register your account via username and password.</p>
-                                <div class="mb-3">
-                                    <MudTextField @bind-Value="RegistrationRequest.Username"
-                                                  Label="Username"
-                                                  For="@(() => RegistrationRequest.Username)"
-                                                  Variant="Variant.Outlined"
-                                                  Placeholder="Enter your username"
-                                                  Immediate="true"/>
-                                </div>
-                                <div class="mb-3">
-                                    <MudSelect T="@(Currency)"
-                                               @bind-Value="RegistrationRequest.Currency"
-                                               Label="Currency"
-                                               Required="true"
-                                               Variant="Variant.Outlined"
-                                               AnchorOrigin="Origin.BottomCenter">
-                                        <MudSelectItem Value="@(Currency.None)">Select a Currency</MudSelectItem>
-                                        <MudSelectItem Value="@(Currency.AUD)">AUD</MudSelectItem>
-                                        <MudSelectItem Value="@(Currency.EUR)">EUR</MudSelectItem>
-                                        <MudSelectItem Value="@(Currency.INR)">INR</MudSelectItem>
-                                        <MudSelectItem Value="@(Currency.NPR)">NRP</MudSelectItem>
-                                        <MudSelectItem Value="@(Currency.USD)">USD</MudSelectItem>
-                                    </MudSelect>
-                                </div>
-                                <div class="mb-3">
-                                    <MudTextField @bind-Value="RegistrationRequest.Password"
-                                                  Label="Password"
-                                                  For="@(() => RegistrationRequest.Password)"
-                                                  Variant="Variant.Outlined"
-                                                  InputType="InputType.Password"
-                                                  Placeholder="Enter your password"
-                                                  Immediate="true"/>
-                                </div>
-                                <div class="mt-4 d-grid">
-                                    <button class="btn btn-outline-dark" type="submit">Register</button>
-                                    <div class="mt-4 d-flex justify-content-center">
-                                        <p class="mb-4">Already have an account,</p>
-                                        <a href="login">&nbsp; Click here.</a>
-                                    </div>
-                                </div>
-                            </EditForm>
-                        </div>
+<div class="register-container">
+    <div class="content-wrapper">
+        <!-- Right Section (Registration Form) -->
+        <div class="right-section">
+            <div class="card">
+                <h2 class="logo-title">C A S H I F Y</h2>
+                <h3 class="form-title">Register</h3>
+                <p class="form-description">Please register to create your account.</p>
+                <form @onsubmit="RegisterHandler">
+                    <div class="input-group">
+                        <label for="username" class="form-label required">Username</label>
+                        <input type="text" id="username" class="input-field" @bind="RegistrationRequest.Username" placeholder="Enter your username" />
                     </div>
-                </div>
+
+                    <div class="input-group">
+                        <label for="currency" class="form-label required">Currency</label>
+                        <select id="currency" class="input-field" @bind="RegistrationRequest.Currency">
+                            <option value="" disabled>Select a Currency</option>
+                            <option value="AUD">AUD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="INR">INR</option>
+                            <option value="NPR">NPR</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password" class="form-label required">Password</label>
+                        <input type="password" id="password" class="input-field" @bind="RegistrationRequest.Password" placeholder="*******" />
+                    </div>
+
+                    <button type="submit" class="submit-btn">Register</button>
+
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login" class="login-link-text">Login</a></p>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
