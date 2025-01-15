@@ -9,8 +9,19 @@ using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
+/// <summary>
+/// Provides services for managing tags, including retrieval, creation, updating, and activation/deactivation.
+/// </summary>
+/// <param name="genericRepository"> Generic repository for accessing tag data.</param>
+/// <param name="userService">Service for managing user-related operations.</param>
 public class TagService(IGenericRepository genericRepository, IUserService userService) : ITagService
 {
+    /// <summary>
+    /// Retrieves a tag by its identifier.
+    /// </summary>
+    /// <param name="tagId">The unique identifier of the tag.</param>
+    /// <returns>Details of the requested tag.</returns>
+    /// <exception cref="Exception"></exception>
     public GetTagDto GetTagById(Guid tagId)
     {
         var tag = genericRepository.GetFirstOrDefault<Tag>(x => x.Id == tagId)
@@ -28,6 +39,12 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         return result;
     }
 
+    /// <summary>
+    /// Retrieves all tags, with optional filtering and ordering.
+    /// </summary>
+    /// <param name="tagFilterRequest">Filter and order criteria for tags.</param>
+    /// <returns>List of tags matching the specified criteria.</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<List<GetTagDto>> GetAllTags(GetTagFilterRequestDto tagFilterRequest)
     {
         var tags = genericRepository.GetAll<Tag>();
@@ -65,6 +82,12 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         }).ToList();
     }
 
+    /// <summary>
+    /// Inserts a new tag into the repository.
+    /// </summary>
+    /// <param name="tag">Details of the tag to be inserted.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task InsertTag(InsertTagDto tag)
     {
         var userIdentifier = await userService.GetUserId();
@@ -87,6 +110,12 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         await genericRepository.Insert(tagModel);
     }
 
+    /// <summary>
+    /// Updates an existing tag in the repository.
+    /// </summary>
+    /// <param name="tag">Details of the tag to be updated.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task UpdateTag(UpdateTagDto tag)
     {
         var userIdentifier = await userService.GetUserId();
@@ -107,6 +136,12 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
         await genericRepository.Update(tagModel);
     }
 
+    /// <summary>
+    /// Toggles the activation status of a tag.
+    /// </summary>
+    /// <param name="tag">Details of the tag to activate or deactivate</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task ActivateDeactivateTag(ActivateDeactivateTagDto tag)
     {
         var tagModel = genericRepository.GetFirstOrDefault<Tag>(x => x.Id == tag.Id)

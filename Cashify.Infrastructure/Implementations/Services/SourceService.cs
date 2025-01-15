@@ -9,8 +9,19 @@ using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
+/// <summary>
+/// Provides services for managing debt sources, including retrieving, creating, updating, and activating/deactivating sources.
+/// </summary>
+/// <param name="genericRepository"> Generic repository for data access.</param>
+/// <param name="userService">Service for retrieving user-related information.</param>
 public class SourceService(IGenericRepository genericRepository, IUserService userService) : ISourceService
 {
+    /// <summary>
+    /// REtrieves a source by its identifier
+    /// </summary>
+    /// <param name="sourceId">The unique identifier of the source.</param>
+    /// <returns>Details of the requested source.</returns>
+    /// <exception cref="Exception"></exception>
     public GetSourceDto GetSourceById(Guid sourceId)
     {
         var source = genericRepository.GetFirstOrDefault<DebtSource>(x => x.Id == sourceId)
@@ -27,6 +38,12 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
         return result;
     }
 
+    /// <summary>
+    /// Retrieves all sources with optional filtering and ordering.
+    /// </summary>
+    /// <param name="sourceFilterRequest">Filter and order criteria for sources.</param>
+    /// <returns>List of sources matching the specified criteria.</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<List<GetSourceDto>> GetAllSources(GetSourceFilterRequestDto sourceFilterRequest)
     {
         var sources = genericRepository.GetAll<DebtSource>();
@@ -63,6 +80,12 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
         }).ToList();
     }
 
+    /// <summary>
+    /// Inserts a new source into the repository
+    /// </summary>
+    /// <param name="source">Details of the source to insert.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task InsertSource(InsertSourceDto source)
     {
         var userIdentifier = await userService.GetUserId();
@@ -84,6 +107,12 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
         await genericRepository.Insert(sourceModel);
     }
 
+    /// <summary>
+    /// Updates an existing source in the repository
+    /// </summary>
+    /// <param name="source">Details of the source to update.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task UpdateSource(UpdateSourceDto source)
     {
         var userIdentifier = await userService.GetUserId();
@@ -104,6 +133,12 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
         await genericRepository.Update(sourceModel);
     }
 
+    /// <summary>
+    /// Toggles the activation status of a source.
+    /// </summary>
+    /// <param name="source">Details of the source to activate or deactivate.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task ActivateDeactivateSource(ActivateDeactivateSourceDto source)
     {
         var sourceModel = genericRepository.GetFirstOrDefault<DebtSource>(x => x.Id == source.Id)

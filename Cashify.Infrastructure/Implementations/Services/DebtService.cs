@@ -30,6 +30,11 @@ public class DebtService(IGenericRepository genericRepository,
         return pendingDebts.Where(x => x.Status is not DebtStatus.Cleared).Sum(x => x.Amount);
     }
 
+    /// <summary>
+    /// Retrieves the count of all debts, cleared debts, pending debts, and past-due debts for the logged-in user.
+    /// </summary>
+    /// <returns>object containing the counts.</returns>
+    /// <exception cref="Exception">Thrown if the user is not logged in.</exception>
     public async Task<GetDebtsCountDto> GetDebtsCount()
     {
         var userIdentifier = await userService.GetUserId();
@@ -51,7 +56,13 @@ public class DebtService(IGenericRepository genericRepository,
             PastDue = debts.Count(x => x.Status != DebtStatus.Cleared && x.DueDate <= DateOnly.FromDateTime(DateTime.Now))
         };
     }
-    
+
+    /// <summary>
+    /// Retrieves the details of a specific debt by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the debt to retrieve.</param>
+    /// <returns>Details of the debt.</returns>
+    /// <exception cref="Exception">Thrown if the debt or its source cannot be found.</exception>
     public GetDebtDto GetDebtById(Guid id)
     {
         var debts = genericRepository.GetAll<Debt>();
@@ -84,6 +95,12 @@ public class DebtService(IGenericRepository genericRepository,
         };
     }
 
+    /// <summary>
+    /// Retrieves a list of debts based on the specified filters. 
+    /// </summary>
+    /// <param name="debtFilterRequest">An object containing the filter criteria.</param>
+    /// <returns> objects matching the filters.</returns>
+    /// <exception cref="Exception">Thrown if the user is not logged in.</exception>
     public async Task<List<GetDebtDto>> GetAllDebts(GetDebtFilterRequestDto debtFilterRequest)
     {
         var debts = genericRepository.GetAll<Debt>();
@@ -173,6 +190,12 @@ public class DebtService(IGenericRepository genericRepository,
         return result;
     }
 
+    /// <summary>
+    /// Inserting a new debt record into the database.
+    /// </summary>
+    /// <param name="debt">An object containing details of the debt to be inserted.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">Thrown if the user is not logged in.</exception>
     public async Task InsertDebt(InsertDebtDto debt)
     {
         var userIdentifier = await userService.GetUserId();
@@ -196,6 +219,14 @@ public class DebtService(IGenericRepository genericRepository,
         await genericRepository.Insert(debtModel);
     }
 
+    /// <summary>
+    /// Updates the details of an existing debt.
+    /// </summary>
+    /// <param name="debt">An object containing updated details of the debt.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">
+    /// Thrown if the user is not logged in or if the debt with the specified ID cannot be found.
+    /// </exception>
     public async Task UpdateDebt(UpdateDebtDto debt)
     {
         var userIdentifier = await userService.GetUserId();
@@ -218,6 +249,14 @@ public class DebtService(IGenericRepository genericRepository,
         await genericRepository.Update(debtModel);
     }
 
+    /// <summary>
+    /// Marks a specified debt as cleared.
+    /// </summary>
+    /// <param name="debtId">The ID of the debt to be cleared</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">
+    //// Thrown if the user is not logged in, the debt is already cleared, or there is insufficient balance to clear the debt. 
+    /// </exception>
     public async Task ClearDebt(Guid debtId)
     {
         var userIdentifier = await userService.GetUserId();
@@ -248,6 +287,14 @@ public class DebtService(IGenericRepository genericRepository,
         await genericRepository.Update(debtModel);
     }
 
+    /// <summary>
+    /// Activates or deactivates a specified debt.
+    /// </summary>
+    /// <param name="debt"> An object containing the ID of the debt to be activated or deactivated.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">
+    /// Thrown if the user is not logged in or if the debt with the specified ID cannot be found.
+    /// </exception>
     public async Task ActivateDeactivateDebt(ActivateDeactivateDebtDto debt)
     {
         var userIdentifier = await userService.GetUserId();

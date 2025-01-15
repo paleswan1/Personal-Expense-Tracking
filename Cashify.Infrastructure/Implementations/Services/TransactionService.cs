@@ -8,8 +8,19 @@ using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
+/// <summary>
+/// Provides services for managing transactions, including retrieval, creation, updating, and activation/deactivation.
+/// </summary>
+/// <param name="genericRepository">Generic repository for accessing data</param>
+/// <param name="userService">Service for managing user-related operations.</param>
+/// <param name="tagService"> Service for managing tags associated with transactions.</param>
 public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
 {
+    /// <summary>
+    /// Retrieves the remaining balance of the current user by calculating inflows, outflows, and cleared debts. 
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception">The remaining balance as a decimal value.</exception>
     public async Task<decimal> GetRemainingBalance()
     {
         var userIdentifier = await userService.GetUserId();
@@ -31,7 +42,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
                transactions.Where(x => x.Type == TransactionType.Outflow).Sum(x => x.Amount) -
                debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
     }
-    
+
+    /// <summary>
+    /// Gets the count of all transactions, inflows, and outflows for the current user.
+    /// </summary>
+    /// <returns>A DTO containing counts of different transaction types.</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<GetTransactionsCountDto> GetTransactionsCount()
     {
         var userIdentifier = await userService.GetUserId();
@@ -52,7 +68,13 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             OutflowsCount = transactions.Count(x => x.Type == TransactionType.Outflow)
         };
     }
-    
+
+    /// <summary>
+    ///  Retrieves a specific transaction by its identifier.
+    /// </summary>
+    /// <param name="transactionId">The unique identifier of the transaction</param>
+    /// <returns>Details of the specified transaction</returns>
+    /// <exception cref="Exception"></exception>
     public GetTransactionDto GetTransactionById(Guid transactionId)
     {
         var transactions = genericRepository.GetAll<Transaction>();
@@ -83,6 +105,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         }; 
     }
 
+    /// <summary>
+    /// Retrieves all transactions with optional filters such as date range, tags, and transaction type.
+    /// </summary>
+    /// <param name="transactionFilterRequest">Filtering criteria for transactions.</param>
+    /// <returns>List of transactions matching the specified filters.</returns>
+    /// <exception cref="Exception"></exception>
     public async Task<List<GetTransactionDto>> GetAllTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
         var transactions = genericRepository.GetAll<Transaction>();
@@ -156,6 +184,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         return result;
     }
 
+    /// <summary>
+    /// Inserts a new transaction into the system, validating balance for outflows and adding associated tags.
+    /// </summary>
+    /// <param name="transaction">The transaction to be inserted.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task InsertTransaction(InsertTransactionDto transaction)
     {
         var userIdentifier = await userService.GetUserId();
@@ -205,6 +239,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         }
     }
 
+    /// <summary>
+    /// Updates an existing transaction, including its details and associated tags.
+    /// </summary>
+    /// <param name="transaction">The updated transaction details.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task UpdateTransaction(UpdateTransactionDto transaction)
     {
         var userIdentifier = await userService.GetUserId();
@@ -248,6 +288,12 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         }
     }
 
+    /// <summary>
+    /// Toggles the active status of a transaction (activates or deactivates).
+    /// </summary>
+    /// <param name="transaction">The transaction whose active status is to be toggled.</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction)
     {
         var transactionModel = genericRepository.GetFirstOrDefault<Transaction>(x => x.Id == transaction.Id)

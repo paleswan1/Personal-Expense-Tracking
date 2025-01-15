@@ -14,6 +14,7 @@ using Cashify.Application.Interfaces.Repository;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
+//Injecting required dependencies and implementing IAuthenticationService
 public class AuthenticationService(IGenericRepository genericRepository, ILocalStorageManager localStorageManager, IConfiguration configuration) : IAuthenticationService
 {
     public int GetUsersCount()
@@ -21,6 +22,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ILocalS
         return genericRepository.GetCount<User>();
     }
 
+    // Registers a new user with validation for existing username
     public async Task Register(RegistrationRequestDto registrationRequest)
     {
         var user = genericRepository.GetFirstOrDefault<User>(x => x.Username == registrationRequest.Username);
@@ -37,6 +39,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ILocalS
         await genericRepository.Insert(userModel);
     }
 
+    // Logs in a user by validating credentials and generating JWT
     public async Task Login(LoginRequestDto loginRequest)
     {
         var user = genericRepository.GetFirstOrDefault<User>(x => x.Username == loginRequest.Username);
@@ -50,7 +53,8 @@ public class AuthenticationService(IGenericRepository genericRepository, ILocalS
         var jsonTokenSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>();
 
         if (jsonTokenSettings == null) throw new Exception("JWT Settings are missing in the configuration.");
-        
+
+        // Define authentication claims for the JWT
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -79,6 +83,7 @@ public class AuthenticationService(IGenericRepository genericRepository, ILocalS
         await localStorageManager.SetItemAsync(Constants.Authentication.Token, token);
     }
 
+    // Logs out a user by clearing the stored token
     public async Task Logout()
     {
         await localStorageManager.ClearItemAsync(Constants.Authentication.Token);

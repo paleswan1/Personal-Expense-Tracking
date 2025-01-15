@@ -12,6 +12,7 @@ namespace Cashify.Infrastructure.Implementations.Services;
 
 public class DashboardService(IGenericRepository genericRepository, IDebtService debtService, IUserService userService) : IDashboardService
 {
+    // Retrieves dashboard summary counts for debts and transactions
     public async Task<GetDashboardCount> GetDashboardCount()
     {
         var userIdentifier = await userService.GetUserId();
@@ -40,6 +41,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         };
     }
 
+    // Retrieves a combined list of pending and overdue debts
     public async Task<List<GetDebtDto>> GetPendingDebts(GetDebtFilterRequestDto debtFilterRequest)
     {
         var pendingFilterRequest = new GetDebtFilterRequestDto()
@@ -69,6 +71,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         return pendingDebts.Concat(overDueDebts).ToList();
     }
 
+    // Retrieves inflow transactions based on filter criteria
     public async Task<List<GetTransactionDetails>> GetInflowsTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
         var userIdentifier = await userService.GetUserId();
@@ -81,6 +84,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         var transactions = genericRepository.GetAll<Transaction>().Where(x => 
             x.Type == TransactionType.Inflow && x.CreatedBy == userIdentifier).ToList();
 
+        // Order transactions and return the result
         var result = transactionFilterRequest.IsAscending 
             ? transactions.OrderBy(x => x.Amount).Take(transactionFilterRequest.Count).ToList() 
             : transactions.OrderByDescending(x => x.Amount).Take(transactionFilterRequest.Count).ToList();
@@ -92,6 +96,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         }).ToList();
     }
 
+    // Retrieves outflow transactions based on filter criteria
     public async Task<List<GetTransactionDetails>> GetOutflowsTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
         var userIdentifier = await userService.GetUserId();
@@ -115,6 +120,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         }).ToList();
     }
 
+    // Retrieves debt transactions based on filter criteria
     public async Task<List<GetTransactionDetails>> GetDebtsTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
         var userIdentifier = await userService.GetUserId();
