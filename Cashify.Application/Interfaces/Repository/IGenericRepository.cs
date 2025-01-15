@@ -14,7 +14,7 @@ public interface IGenericRepository : ITransientService
     
     List<TEntity> GetAll<TEntity>() where TEntity : BaseEntity; 
 
-    Task Insert<TEntity>(TEntity entity) where TEntity : BaseEntity;
+    Task Insert<TEntity>(TEntity entity, bool isCreatedByRequired = true) where TEntity : BaseEntity;
 
     Task Update<TEntity>(TEntity entity) where TEntity : BaseEntity;
 

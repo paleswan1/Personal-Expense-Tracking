@@ -1,9 +1,13 @@
-﻿using Cashify.Domain.Models;
+﻿using System.Runtime.InteropServices.JavaScript;
+using ApexCharts;
+using Cashify.Domain.Models;
 using Cashify.Domain.Common.Enum;
 using Cashify.Application.DTOs.Transactions;
 using Cashify.Application.Interfaces.Services;
 using Cashify.Application.Interfaces.Repository;
 using Cashify.Application.DTOs.Filters.Transactions;
+using Cashify.Application.Interfaces.Managers;
+using Cashify.Domain.Common.Constants;
 using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
@@ -14,7 +18,7 @@ namespace Cashify.Infrastructure.Implementations.Services;
 /// <param name="genericRepository">Generic repository for accessing data</param>
 /// <param name="userService">Service for managing user-related operations.</param>
 /// <param name="tagService"> Service for managing tags associated with transactions.</param>
-public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService) : ITransactionService
+public class TransactionService(IGenericRepository genericRepository, IUserService userService, ITagService tagService, ICsvManager csvManager) : ITransactionService
 {
     /// <summary>
     /// Retrieves the remaining balance of the current user by calculating inflows, outflows, and cleared debts. 
@@ -302,5 +306,33 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
         transactionModel.IsActive = !transactionModel.IsActive;
         
         await genericRepository.Update(transactionModel);
+    }
+
+    public async Task ExportTransactionDetailsToCsv(GetTransactionFilterRequestDto transactionFilterRequest)
+    {
+        var transactions = await GetAllTransactions(transactionFilterRequest);
+
+        var userIdentifier = await userService.GetUserId();
+        
+        if (userIdentifier == Guid.Empty)
+        {
+            throw new Exception("You are not logged in.");
+        }
+
+        var result = transactions.Select(x => new
+        {
+            Id = x.Id,
+            Title = x.Title,
+            Amount = x.Amount,
+            Date = x.Date,
+            Note = x.Note,
+            Type = x.Type.ToString(),
+            Source = x.Source.ToString(),
+            Tags = $"Tags - ({string.Join(", ", x.Tags.Select(y => y.Title))})"
+        }).ToList();
+        
+        var transactionDetails = csvManager.GenerateCsv(result);
+        
+        await csvManager.SaveCsvFileAsync(Constants.ModelPath.TransactionDetails, transactionDetails);
     }
 }

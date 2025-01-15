@@ -33,7 +33,7 @@
         </div>
         <div class="filter-right">
             <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertTransactionModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertTransactionModalOpen">Add Transactions</MudButton>
-
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" DropShadow="false" Class="btn btn--md" OnClick="ExportTransactionDetails" StartIcon="@Icons.Material.Filled.ImportExport">Export Transactions</MudButton>
             <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
                 <span class="text-md">Balance: @Balance.ToString("C")</span>
             </MudChip>
@@ -82,14 +82,12 @@
                             }
                         </td>
                         <td>
-                        <td>
                             <MudIconButton Color="Color.Primary"
                                            Variant="Variant.Filled"
                                            Icon="@Icons.Material.Filled.Edit"
                                            OnClick="() => OpenCloseUpdateTransactionNoteModal(transaction.Id)"
                                            Disabled="IsUpdateTransactionNoteModalOpen"
                                            Class="btn-icon" />
-                        </td>
                         </td>
                     </tr>
                 }

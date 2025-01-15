@@ -217,4 +217,24 @@ public partial class TransactionDetails
         }
     }
     #endregion
+
+    #region Export Transaction
+    private async Task ExportTransactionDetails()
+    {
+        var filterRequest = new GetTransactionFilterRequestDto
+        {
+            Search = Search,
+            OrderBy = CurrentSortColumn,
+            IsDescending = IsSortDescending,
+            TagIds = FilterTagIdentifiers.ToList(),
+            StartDate = StartDate,
+            EndDate = EndDate,
+            TransactionType = TransactionType
+        };
+        
+        await TransactionService.ExportTransactionDetailsToCsv(filterRequest);
+        
+        SnackbarService.ShowSnackbar("Transaction details exported successfully.", Severity.Success, Variant.Outlined);
+    }
+    #endregion
 }

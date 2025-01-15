@@ -77,7 +77,7 @@ public class GenericRepository(ISerializeDeserializeManager serializeDeserialize
         }
     }
 
-    public async Task Insert<TEntity>(TEntity entity) where TEntity : BaseEntity
+    public async Task Insert<TEntity>(TEntity entity, bool isCreatedByRequired = true) where TEntity : BaseEntity
     {
         try
         {
@@ -85,9 +85,13 @@ public class GenericRepository(ISerializeDeserializeManager serializeDeserialize
             
             var entities = GetAll<TEntity>(filePath);
 
-            var userId = await userService.GetUserId();
 
-            entity.CreatedBy = userId;
+            if (isCreatedByRequired)
+            {
+                var userId = await userService.GetUserId();
+                entity.CreatedBy = userId;
+            }
+
             entity.CreatedDate = DateTime.Now;
             
             entities.Add(entity);

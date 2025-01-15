@@ -28,7 +28,7 @@ public class SeedService(IGenericRepository genericRepository) : ISeedService
 
         foreach (var tag in tags)
         {
-            genericRepository.Insert(tag);
+            genericRepository.Insert(tag, false);
         }
     }
 }

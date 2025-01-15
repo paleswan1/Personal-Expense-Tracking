@@ -19,4 +19,6 @@ public interface ITransactionService : ITransientService
     Task UpdateTransaction(UpdateTransactionDto transaction);
 
     Task ActivateDeactivateTransaction(ActivateDeactivateTransactionDto transaction);
+
+    Task ExportTransactionDetailsToCsv(GetTransactionFilterRequestDto transactionFilterRequest);
 }
