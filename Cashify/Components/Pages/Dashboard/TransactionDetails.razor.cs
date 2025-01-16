@@ -1,4 +1,5 @@
 ﻿using Cashify.Application.DTOs.Dashboard;
+using Cashify.Application.DTOs.User;
 using MudBlazor;
 
 namespace Cashify.Components.Pages.Dashboard;
@@ -10,6 +11,15 @@ public partial class TransactionDetails
         await GetDashboardCount();
     }
 
+    #region User Details
+    private GetUserDetailsDto UserDetails { get; set; } = new();
+    
+    private async Task GetUserDetails()
+    {
+        UserDetails = await ProfileService.GetUserDetails();
+    }
+    #endregion
+    
     #region Dashboard Count
     private GetDashboardCount DashboardCount { get; set; } = new GetDashboardCount();
 

@@ -9,7 +9,7 @@
             <div class="">
                 <p class="text-gray-500">Total Inflows</p>
                 <p class="text-gray-500 text-[12px]">Credits (@DashboardCount.TotalInflowsCount)</p>
-                <h2 class="text-2xl font-bold">@DashboardCount.TotalInflowsAmount.ToString("C")</h2>
+                <h2 class="text-2xl font-bold">@UserDetails.Currency @DashboardCount.TotalInflowsAmount</h2>
             </div>
             <div class="rounded-full size-4">
                 <MudIcon Icon="@Icons.Material.Filled.AccountBalance" Color="Color.Warning" />
@@ -19,7 +19,7 @@
             <div class="">
                 <p class="text-gray-500">Total Outflows</p>
                 <p class="text-gray-500 text-[12px]">Debits (@DashboardCount.TotalOutflowsCount)</p>
-                <h2 class="text-2xl font-bold">@DashboardCount.TotalOutflowsAmount.ToString("C")</h2>
+                <h2 class="text-2xl font-bold">@UserDetails.Currency @DashboardCount.TotalOutflowsAmount</h2>
             </div>
             <div class="rounded-full size-4">
                 <MudIcon Icon="@Icons.Material.Filled.MoneyOff" Class="text-3xl" style="color: #63b3ed;" />
@@ -29,7 +29,7 @@
             <div class="">
                 <p class="text-gray-500">Total Pending Debts</p>
                 <p class="text-gray-500 text-[12px]">Pending Debts (@DashboardCount.TotalPendingDebtsCount)</p>
-                <h2 class="text-2xl font-bold">@DashboardCount.TotalPendingDebtsAmount.ToString("C")</h2>
+                <h2 class="text-2xl font-bold">@UserDetails.Currency @DashboardCount.TotalPendingDebtsAmount</h2>
             </div>
             <div class="rounded-full size-4">
                 <MudIcon Icon="@Icons.Material.Filled.CreditCardOff" Color="Color.Error" Class="text-3xl" />
@@ -39,7 +39,7 @@
             <div class="">
                 <p class="text-gray-500">Total Cleared Debts</p>
                 <p class="text-gray-500 text-[12px]">Cleared Debt (@DashboardCount.TotalClearedDebtsCount)</p>
-                <h2 class="text-2xl font-bold">  @DashboardCount.TotalClearedDebtsAmount.ToString("C")</h2>
+                <h2 class="text-2xl font-bold">@UserDetails.Currency @DashboardCount.TotalClearedDebtsAmount</h2>
             </div>
             <div class="rounded-full size-4">
                 <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="text-3xl" style="color: #c770d5;" />
