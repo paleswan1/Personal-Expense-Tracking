@@ -15,20 +15,42 @@ public partial class BarChart<T> : ComponentBase where T : class
 
     [Parameter] public string Height { get; set; } = "320";
 
-    [Parameter] public string Width { get; set; } = "600";
-
     [Parameter] public string Title { get; set; } = "Value";
-
-    [Parameter] public object MaxYValue { get; set; } = "5";
 
     [Parameter] public bool ShowLegend { get; set; } = true;
     
     private ApexChartOptions<T> Options { get; set; }
+    private ApexChart<T>? _chart;
 
     protected override void OnInitialized()
     {
+        InitializeOptions();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_chart != null)
+        {
+            await _chart.UpdateSeriesAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void InitializeOptions()
+    {
         Options = new ApexChartOptions<T>
         {
+            Chart = new Chart
+            {
+                Animations = new Animations
+                {
+                    Enabled = true,
+                    DynamicAnimation = new DynamicAnimation
+                    {
+                        Enabled = true
+                    }
+                }
+            },
             PlotOptions = new PlotOptions
             {
                 Bar = new PlotOptionsBar
@@ -38,13 +60,6 @@ public partial class BarChart<T> : ComponentBase where T : class
                     ColumnWidth = "10%"
                 }
             },
-            Yaxis =
-            [
-                new YAxis
-                {
-                    Max = MaxYValue
-                }
-            ],
             Legend = new()
             {
                 Show = ShowLegend

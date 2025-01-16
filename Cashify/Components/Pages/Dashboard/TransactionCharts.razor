@@ -1,0 +1,183 @@
+﻿@using Cashify.Application.DTOs.Dashboard
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
+    <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <div class="filter d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+            <div class="filter-left d-flex align-items-center gap-x-2">
+                <MudText Typo="Typo.h6" HtmlTag="h1" Color="Color.Inherit" Class="topbar-text ms-2">
+                    Inflows
+                </MudText>
+            </div>
+            <div class="filter-right d-flex justify-content-end">
+                <Filter OnFilterApplication="GetInflowsTransactionDetails">
+                    <MudTextField @bind-Value="InflowsFilter.Count"
+                                  Label="Record Count"
+                                  For="@(() => InflowsFilter.Count)"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Number"
+                                  Placeholder="Enter your count limit"
+                                  Immediate="true"/>
+                    <MudDatePicker @bind-Date="InflowsFilter.StartDate"
+                                   Label="Start Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a Start Date"
+                                   PickerVariant="PickerVariant.Dialog"/>
+                    <MudDatePicker @bind-Date="InflowsFilter.EndDate"
+                                   Label="End Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a End Date"
+                                   PickerVariant="PickerVariant.Dialog"/>
+                    <MudRadioGroup @bind-Value="InflowsFilter.IsAscending">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Lowest</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Highest</MudRadio>
+                    </MudRadioGroup>
+                    <MudRadioGroup @bind-Value="InflowsFilter.IsDisplayedAsBarChart">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Bar Chart</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Doughnut Chart</MudRadio>
+                    </MudRadioGroup>
+                </Filter>
+            </div>
+        </div>
+        <div class="row">
+            @if (IsInflowsDisplayedAsBarChart)
+            {
+                <BarChart T="GetTransactionDetails"
+                          Items="InflowsData"
+                          Title="Inflow Transactions"
+                          Height="170"
+                          ShowLegend="true"
+                          IsHorizontallyAligned="false"
+                          XValue="@(e => e.Title)"
+                          YValue="@(e => e.Sum(z => z.Amount))"/>
+            }
+            else
+            {
+                <DonutChart T="GetTransactionDetails"
+                            Items="InflowsData"
+                            XValue="@(e => e.Title)"
+                            YValue="@(e => e.Amount)"/>
+            }
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <div class="filter d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+            <div class="filter-left d-flex align-items-center gap-x-2">
+                <MudText Typo="Typo.h6" HtmlTag="h1" Color="Color.Inherit" Class="topbar-text ms-2">
+                    Outflows
+                </MudText>
+            </div>
+            <div class="filter-right d-flex justify-content-end">
+                <Filter OnFilterApplication="GetOutflowsTransactionDetails">
+                    <MudTextField @bind-Value="OutflowsFilter.Count"
+                                  Label="Record Count"
+                                  For="@(() => OutflowsFilter.Count)"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Number"
+                                  Placeholder="Enter your count limit"
+                                  Immediate="true"/>
+                    <MudDatePicker @bind-Date="OutflowsFilter.StartDate"
+                                   Label="Start Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a Start Date"
+                                   PickerVariant="PickerVariant.Dialog"/>
+                    <MudDatePicker @bind-Date="OutflowsFilter.EndDate"
+                                   Label="End Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a End Date"
+                                   PickerVariant="PickerVariant.Dialog"/>
+                    <MudRadioGroup @bind-Value="OutflowsFilter.IsAscending">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Lowest</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Highest</MudRadio>
+                    </MudRadioGroup>
+                    <MudRadioGroup @bind-Value="OutflowsFilter.IsDisplayedAsBarChart">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Bar Chart</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Doughnut Chart</MudRadio>
+                    </MudRadioGroup>
+                </Filter>
+            </div>
+        </div>
+        <div class="row">
+            @if (IsOutflowsDisplayedAsBarChart)
+            {
+                <BarChart T="GetTransactionDetails"
+                          Items="OutflowsData"
+                          Title="Out Transactions"
+                          Height="170"
+                          ShowLegend="true"
+                          IsHorizontallyAligned="false"
+                          XValue="@(e => e.Title)"
+                          YValue="@(e => e.Sum(z => z.Amount))"/>
+            }
+            else
+            {
+                <DonutChart T="GetTransactionDetails"
+                            Items="OutflowsData"
+                            XValue="@(e => e.Title)"
+                            YValue="@(e => e.Amount)"/>
+            }
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <div class="filter d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+            <div class="filter-left d-flex align-items-center gap-x-2">
+                <MudText Typo="Typo.h6" HtmlTag="h1" Color="Color.Inherit" Class="topbar-text ms-2">
+                    Debts
+                </MudText>
+            </div>
+            <div class="filter-right d-flex justify-content-end">
+                <Filter OnFilterApplication="GetDebtsTransactionDetails">
+                    <MudTextField @bind-Value="DebtsFilter.Count"
+                                  Label="Record Count"
+                                  For="@(() => DebtsFilter.Count)"
+                                  Variant="Variant.Text"
+                                  InputType="InputType.Number"
+                                  Placeholder="Enter your count limit"
+                                  Immediate="true"/>
+                    <MudDatePicker @bind-Date="DebtsFilter.StartDate"
+                                   Label="Start Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a Start Date"
+                                   PickerVariant="PickerVariant.Dialog" />
+                    <MudDatePicker @bind-Date="DebtsFilter.EndDate"
+                                   Label="End Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a Start Date"
+                                   PickerVariant="PickerVariant.Dialog" />
+                    <MudRadioGroup @bind-Value="DebtsFilter.IsAscending">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Lowest</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Highest</MudRadio>
+                    </MudRadioGroup>
+                    <MudRadioGroup @bind-Value="DebtsFilter.IsDisplayedAsBarChart">
+                        <MudRadio Value="true" Color="Color.Primary" Dense="true">Bar Chart</MudRadio>
+                        <MudRadio Value="false" Color="Color.Secondary" Dense="false">Doughnut Chart</MudRadio>
+                    </MudRadioGroup>
+                </Filter>
+            </div>
+        </div>
+        <div class="row">
+            @if (IsDebtsDisplayedAsBarChart)
+            {
+                <BarChart T="GetTransactionDetails"
+                          Items="DebtsData"
+                          Title="Debts Transactions"
+                          Height="170"
+                          ShowLegend="true"
+                          IsHorizontallyAligned="false"
+                          XValue="@(e => e.Title)"
+                          YValue="@(e => e.Sum(z => z.Amount))"/>
+            }
+            else
+            {
+                <DonutChart T="GetTransactionDetails"
+                            Items="DebtsData"
+                            XValue="@(e => e.Title)"
+                            YValue="@(e => e.Amount)"/>
+            }
+        </div>
+    </div>
+</div>

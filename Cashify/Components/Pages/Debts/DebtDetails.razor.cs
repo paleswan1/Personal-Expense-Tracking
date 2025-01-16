@@ -13,6 +13,9 @@ public partial class DebtDetails
 {
     [Parameter] 
     public DebtStatus? DebtStatus { get; set; }
+    
+    [Parameter] 
+    public bool IsEditable { get; set; }
 
     [Parameter] 
     public EventCallback OnDebtsCountUpdate { get; set; }

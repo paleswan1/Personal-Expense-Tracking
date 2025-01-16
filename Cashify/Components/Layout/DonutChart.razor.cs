@@ -14,12 +14,39 @@ public partial class DonutChart<T> : ComponentBase where T : class
     [Parameter]
     public Func<T, decimal?> YValue { get; set; }
 
-    private ApexChartOptions<T> BarChartOptions { get; set; } = new();
+    private ApexChart<T>? _chart;
+
+    private ApexChartOptions<T> ChartOptions { get; set; } = new();
 
     protected override void OnInitialized()
     {
-        BarChartOptions = new ApexChartOptions<T>
+        InitializeOptions();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_chart != null)
         {
+            await _chart.UpdateSeriesAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void InitializeOptions()
+    {
+        ChartOptions = new ApexChartOptions<T>
+        {
+            Chart = new Chart
+            {
+                Animations = new Animations
+                {
+                    Enabled = true,
+                    DynamicAnimation = new DynamicAnimation
+                    {
+                        Enabled = true
+                    }
+                }
+            },
             PlotOptions = new PlotOptions
             {
                 Pie = new PlotOptionsPie

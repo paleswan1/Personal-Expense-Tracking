@@ -82,7 +82,10 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         }
         
         var transactions = genericRepository.GetAll<Transaction>().Where(x => 
-            x.Type == TransactionType.Inflow && x.CreatedBy == userIdentifier).ToList();
+            x.Type == TransactionType.Inflow && 
+            x.CreatedBy == userIdentifier && 
+            (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
+            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();
 
         // Order transactions and return the result
         var result = transactionFilterRequest.IsAscending 
@@ -107,7 +110,10 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         }
         
         var transactions = genericRepository.GetAll<Transaction>().Where(x => 
-            x.Type == TransactionType.Outflow && x.CreatedBy == userIdentifier).ToList();
+            x.Type == TransactionType.Outflow 
+            && x.CreatedBy == userIdentifier && 
+            (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
+            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();
 
         var result = transactionFilterRequest.IsAscending 
             ? transactions.OrderBy(x => x.Amount).Take(transactionFilterRequest.Count).ToList() 
@@ -131,7 +137,9 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
         }
         
         var debts = genericRepository.GetAll<Debt>().Where(x => 
-            x.CreatedBy == userIdentifier).ToList();
+            x.CreatedBy == userIdentifier && 
+            (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
+            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();
 
         var result = transactionFilterRequest.IsAscending 
             ? debts.OrderBy(x => x.Amount).Take(transactionFilterRequest.Count).ToList() 

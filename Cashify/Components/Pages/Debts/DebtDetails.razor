@@ -18,7 +18,12 @@
             </Filter>
         </div>
         <div class="filter-right">
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertDebtModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertDebtModalOpen">Add Debts</MudButton>
+            @if (IsEditable)
+            {
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="OpenCloseInsertDebtModal" StartIcon="@Icons.Material.Filled.Add" Disabled="IsInsertDebtModalOpen">
+                    Add Debts
+                </MudButton>
+            }
             <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
                 <span class="text-md">Balance: @Balance.ToString("C")</span>
             </MudChip>
@@ -42,16 +47,22 @@
                     <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.Amount))" Class="ms-1" />
                 </th>
                 <th>Source</th>
-                <th>Status</th>
+                @if(IsEditable)
+                {
+                    <th>Status</th>
+                }
                 <th @onclick="() => ChangeSorting(nameof(GetDebtModel.DueDate))" style="cursor: pointer;">
                     Due Date
                     <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.DueDate))" Class="ms-1" />
                 </th>
-                <th @onclick="() => ChangeSorting(nameof(GetDebtModel.ClearedDate))" style="cursor: pointer;">
-                    Cleared Date
-                    <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.ClearedDate))" Class="ms-1" />
-                </th>
-                <th>Action</th>
+                @if (IsEditable)
+                {
+                    <th @onclick="() => ChangeSorting(nameof(GetDebtModel.ClearedDate))" style="cursor: pointer;">
+                        Cleared Date
+                        <MudIcon Icon="@GetSortIcon(nameof(GetDebtModel.ClearedDate))" Class="ms-1" />
+                    </th>
+                    <th>Action</th>
+                }
             </tr>
             </thead>
             <tbody>
@@ -62,40 +73,46 @@
                 <td>@debt.Title</td>
                 <td>@debt.Amount.ToString("C")</td>
                 <td>@debt.Source.Title</td>
-                <td>
-                    @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
-                    {
-                        if (debt.Status == Domain.Common.Enum.DebtStatus.Pending)
+                @if (IsEditable)
+                {
+                    <td>
+                        @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
                         {
-                            <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Warning">
-                                <span>Pending</span>
-                            </MudChip>
-                        }
-                        else
-                        {
-                            if (debt.Status == Domain.Common.Enum.DebtStatus.Overdue)
+                            if (debt.Status != Domain.Common.Enum.DebtStatus.Pending)
                             {
-                                <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Error">
-                                    <span>Overdue</span>
+                                if (debt.Status == Domain.Common.Enum.DebtStatus.Overdue)
+                                {
+                                    <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Error">
+                                        <span>Overdue</span>
+                                    </MudChip>
+                                }
+                            }
+                            else
+                            {
+                                <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Warning">
+                                    <span>Pending</span>
                                 </MudChip>
                             }
                         }
-                    }
-                    else
-                    {
-                        <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
-                            <span>Cleared</span>
-                        </MudChip>
-                    }
-                </td>
+                        else
+                        {
+                            <MudChip T="string" Variant="Variant.Outlined" Class="status" Color="Color.Success">
+                                <span>Cleared</span>
+                            </MudChip>
+                        }
+                    </td>
+                }
                 <td>@debt.DueDate</td>
-                <td>@debt.ClearedDate</td>
-                <td>
-                    @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
-                    {
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="() => OpenCloseClearDebtModal(debt.Id)" StartIcon="@Icons.Material.Filled.Add" Disabled="IsClearDebtModalOpen">Clear Debt</MudButton>
-                    }
-                </td>
+                @if (IsEditable)
+                {
+                    <td>@debt.ClearedDate</td>
+                    <td>
+                        @if (debt.Status != Domain.Common.Enum.DebtStatus.Cleared)
+                        {
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" DropShadow="false" Class="btn btn--md" OnClick="() => OpenCloseClearDebtModal(debt.Id)" StartIcon="@Icons.Material.Filled.Add" Disabled="IsClearDebtModalOpen">Clear Debt</MudButton>
+                        }
+                    </td>
+                }
             </tr>
             }
             </tbody>
@@ -103,80 +120,83 @@
     </div>
 </div>
 
-@if (IsInsertDebtModalOpen)
+@if (IsEditable)
 {
-    <ModalLayout Module="Debts"
-                 Size="lg"
-                 Description="Please fill in the following form to insert your debt record."
-                 Title="Insert Debt"
-                 OnCancel="OpenCloseInsertDebtModal">
-        <EditForm Model="InsertDebtModel" FormName="Insert Debt" OnSubmit="InsertDebt">
-            <DataAnnotationsValidator />
-            <div class="mb-3">
-                <MudTextField @bind-Value="InsertDebtModel.Title" 
-                              Label="Title" 
-                              For="@(() => InsertDebtModel.Title)" 
-                              Variant="Variant.Text" 
-                              Placeholder="Enter the Debt Title" 
-                              Required="true"
-                              Immediate="true" />
-            </div>
-            <div class="mb-3">
-                <MudTextField @bind-Value="InsertDebtModel.Amount"
-                              Label="Amount"
-                              For="@(() => InsertDebtModel.Amount)"
-                              Variant="Variant.Text"
-                              Placeholder="Enter the Debt Amount"
-                              Required="true"
-                              InputType="InputType.Number"
-                              Immediate="true" />
-            </div>
-            <div class="mb-3">
-                <MudSelect T="@(Guid)"
-                           @bind-Value="InsertDebtModel.SourceId"
-                           Label="Source"
-                           Required="true"
-                           Variant="Variant.Text"
-                           AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="@(Guid.Empty)">Select a Source</MudSelectItem>
-                    @foreach(var source in DebtSourceModels)
-                    {
-                        <MudSelectItem Value="@source.Id">@source.Title</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
-            <div class="mb-3">
-                <MudDatePicker @bind-Date="InsertDebtModel.DueDate"
-                               Label="Due Date"
+    if (IsInsertDebtModalOpen)
+    {
+        <ModalLayout Module="Debts"
+                     Size="lg"
+                     Description="Please fill in the following form to insert your debt record."
+                     Title="Insert Debt"
+                     OnCancel="OpenCloseInsertDebtModal">
+            <EditForm Model="InsertDebtModel" FormName="Insert Debt" OnSubmit="InsertDebt">
+                <DataAnnotationsValidator />
+                <div class="mb-3">
+                    <MudTextField @bind-Value="InsertDebtModel.Title" 
+                                  Label="Title" 
+                                  For="@(() => InsertDebtModel.Title)" 
+                                  Variant="Variant.Text" 
+                                  Placeholder="Enter the Debt Title" 
+                                  Required="true"
+                                  Immediate="true" />
+                </div>
+                <div class="mb-3">
+                    <MudTextField @bind-Value="InsertDebtModel.Amount"
+                                  Label="Amount"
+                                  For="@(() => InsertDebtModel.Amount)"
+                                  Variant="Variant.Text"
+                                  Placeholder="Enter the Debt Amount"
+                                  Required="true"
+                                  InputType="InputType.Number"
+                                  Immediate="true" />
+                </div>
+                <div class="mb-3">
+                    <MudSelect T="@(Guid)"
+                               @bind-Value="InsertDebtModel.SourceId"
+                               Label="Source"
+                               Required="true"
                                Variant="Variant.Text"
-                               DateFormat="dd.MM.yyyy"
-                               Placeholder="Select a End Date"
-                               PickerVariant="PickerVariant.Dialog" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-discard" @onclick="@OpenCloseInsertDebtModal">Discard</button>
-                <button type="submit" class="btn btn-submit">Submit</button>
-            </div>
-        </EditForm>
-    </ModalLayout>
-}
+                               AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@(Guid.Empty)">Select a Source</MudSelectItem>
+                        @foreach(var source in DebtSourceModels)
+                        {
+                            <MudSelectItem Value="@source.Id">@source.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+                <div class="mb-3">
+                    <MudDatePicker @bind-Date="InsertDebtModel.DueDate"
+                                   Label="Due Date"
+                                   Variant="Variant.Text"
+                                   DateFormat="dd.MM.yyyy"
+                                   Placeholder="Select a End Date"
+                                   PickerVariant="PickerVariant.Dialog" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-discard" @onclick="@OpenCloseInsertDebtModal">Discard</button>
+                    <button type="submit" class="btn btn-submit">Submit</button>
+                </div>
+            </EditForm>
+        </ModalLayout>
+    }
 
-@if (IsClearDebtModalOpen)
-{
-    <ModalLayout Module="Debts"
-                 Size="lg"
-                 Description="Please submit the respective form to clear your debt."
-                 Title="Clear Debt"
-                 OnCancel="() => OpenCloseClearDebtModal(GetDebtModel.Id)">
-        <EditForm Model="GetDebtModel" FormName="Clear Debt" OnSubmit="ClearDebt">
-            <DataAnnotationsValidator />
-            <div class="mb-3">
-                <span>Are you sure you want to clear the debt for @GetDebtModel.Title due on @GetDebtModel.DueDate, pending amount is @GetDebtModel.Amount?</span>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-discard" @onclick="() => OpenCloseClearDebtModal(GetDebtModel.Id)">Discard</button>
-                <button type="submit" class="btn btn-submit">Submit</button>
-            </div>
-        </EditForm>
-    </ModalLayout>
+    if (IsClearDebtModalOpen)
+    {
+        <ModalLayout Module="Debts"
+                     Size="lg"
+                     Description="Please submit the respective form to clear your debt."
+                     Title="Clear Debt"
+                     OnCancel="() => OpenCloseClearDebtModal(GetDebtModel.Id)">
+            <EditForm Model="GetDebtModel" FormName="Clear Debt" OnSubmit="ClearDebt">
+                <DataAnnotationsValidator />
+                <div class="mb-3">
+                    <span>Are you sure you want to clear the debt for @GetDebtModel.Title due on @GetDebtModel.DueDate, pending amount is @GetDebtModel.Amount?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-discard" @onclick="() => OpenCloseClearDebtModal(GetDebtModel.Id)">Discard</button>
+                    <button type="submit" class="btn btn-submit">Submit</button>
+                </div>
+            </EditForm>
+        </ModalLayout>
+    }
 }

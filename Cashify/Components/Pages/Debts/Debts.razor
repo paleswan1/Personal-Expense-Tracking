@@ -5,25 +5,25 @@
         <MudTabPanel Text="All" BadgeColor="Color.Secondary" BadgeData="@DebtsCount.All">
             @if (ActivePanelIndex == 0)
             {
-                <DebtDetails OnDebtsCountUpdate="HandleDebtCounts" />
+                <DebtDetails OnDebtsCountUpdate="HandleDebtCounts" IsEditable="true" />
             }
         </MudTabPanel>
         <MudTabPanel Text="Cleared" BadgeColor="Color.Secondary" BadgeData="@DebtsCount.Cleared">
             @if (ActivePanelIndex == 1)
             {
-                <DebtDetails DebtStatus="DebtStatus.Cleared" OnDebtsCountUpdate="HandleDebtCounts" />
+                <DebtDetails DebtStatus="DebtStatus.Cleared" OnDebtsCountUpdate="HandleDebtCounts" IsEditable="true" />
             }
         </MudTabPanel>
         <MudTabPanel Text="Pending" BadgeColor="Color.Secondary" BadgeData="@DebtsCount.Pending">
             @if (ActivePanelIndex == 2)
             {
-                <DebtDetails DebtStatus="DebtStatus.Pending" OnDebtsCountUpdate="HandleDebtCounts" />
+                <DebtDetails DebtStatus="DebtStatus.Pending" OnDebtsCountUpdate="HandleDebtCounts" IsEditable="true" />
             }
         </MudTabPanel>
         <MudTabPanel Text="Overdue" BadgeColor="Color.Secondary" BadgeData="@DebtsCount.PastDue">
             @if (ActivePanelIndex == 3)
             {
-                <DebtDetails DebtStatus="DebtStatus.Overdue" OnDebtsCountUpdate="HandleDebtCounts" />
+                <DebtDetails DebtStatus="DebtStatus.Overdue" OnDebtsCountUpdate="HandleDebtCounts" IsEditable="true" />
             }
         </MudTabPanel>
     </MudTabs>
