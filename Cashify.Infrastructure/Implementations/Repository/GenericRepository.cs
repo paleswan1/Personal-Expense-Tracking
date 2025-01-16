@@ -1,8 +1,8 @@
 ﻿using Cashify.Domain.Common.Base;
 using Cashify.Application.Utility;
+using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Managers;
 using Cashify.Application.Interfaces.Repository;
-using Cashify.Application.Interfaces.Utility;
 
 namespace Cashify.Infrastructure.Implementations.Repository;
 
@@ -66,7 +66,7 @@ public class GenericRepository(ISerializeDeserializeManager serializeDeserialize
         {
             var filePath = CreateEntity<TEntity>().ToFilePath();
             
-            var entities = GetAll<TEntity>(filePath);
+            var entities = GetAll<TEntity>(filePath).Where(predicate ?? (_ => true)).ToList();
 
             return entities;
         }
@@ -153,7 +153,7 @@ public class GenericRepository(ISerializeDeserializeManager serializeDeserialize
         }
     }
     
-    private TEntity? CreateEntity<TEntity>() where TEntity : BaseEntity
+    private static TEntity? CreateEntity<TEntity>() where TEntity : BaseEntity
     {
         return Activator.CreateInstance(typeof(TEntity)) as TEntity;
     }

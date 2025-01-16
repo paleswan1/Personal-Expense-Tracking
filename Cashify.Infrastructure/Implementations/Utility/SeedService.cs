@@ -1,7 +1,7 @@
-﻿using Cashify.Application.Utility;
+﻿using Cashify.Domain.Models;
+using Cashify.Application.Utility;
 using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Repository;
-using Cashify.Domain.Models;
 
 namespace Cashify.Infrastructure.Implementations.Utility;
 

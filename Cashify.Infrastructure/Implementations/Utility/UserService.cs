@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using System.Security.Claims;
+using Cashify.Application.Settings;
 using Microsoft.IdentityModel.Tokens;
+using Cashify.Domain.Common.Constants;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
-using Cashify.Application.Settings;
-using Cashify.Domain.Common.Constants;
 using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Managers;
 

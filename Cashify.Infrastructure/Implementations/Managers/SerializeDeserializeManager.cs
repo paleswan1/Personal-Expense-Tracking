@@ -27,7 +27,7 @@ public class SerializeDeserializeManager : ISerializeDeserializeManager
     {
         var result = JsonSerializer.Deserialize<List<T>>(value);
 
-        return result ?? new List<T>();
+        return result ?? [];
     } 
 }
 
