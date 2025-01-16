@@ -5,7 +5,6 @@ using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Services;
 using Cashify.Application.DTOs.Filters.Sources;
 using Cashify.Application.Interfaces.Repository;
-using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
@@ -17,7 +16,7 @@ namespace Cashify.Infrastructure.Implementations.Services;
 public class SourceService(IGenericRepository genericRepository, IUserService userService) : ISourceService
 {
     /// <summary>
-    /// REtrieves a source by its identifier
+    /// Retrieves a source by its identifier
     /// </summary>
     /// <param name="sourceId">The unique identifier of the source.</param>
     /// <returns>Details of the requested source.</returns>
@@ -46,7 +45,6 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
     /// <exception cref="Exception"></exception>
     public async Task<List<GetSourceDto>> GetAllSources(GetSourceFilterRequestDto sourceFilterRequest)
     {
-        var sources = genericRepository.GetAll<DebtSource>();
         
         var userIdentifier = await userService.GetUserId();
 
@@ -55,12 +53,10 @@ public class SourceService(IGenericRepository genericRepository, IUserService us
             throw new Exception("You are not logged in.");
         }
         
-        sources = sources.Where(x => x.CreatedBy == userIdentifier).ToList();
+        var sources = genericRepository.GetAll<DebtSource>(x => 
+            x.CreatedBy == userIdentifier 
+            && (string.IsNullOrEmpty(sourceFilterRequest.Search) || x.Title.Contains(sourceFilterRequest.Search, StringComparison.OrdinalIgnoreCase)));
 
-        if (!string.IsNullOrEmpty(sourceFilterRequest.Search))
-        {
-            sources = sources.Where(x => x.Title.Contains(sourceFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
         
         if (!string.IsNullOrEmpty(sourceFilterRequest.OrderBy))
         {

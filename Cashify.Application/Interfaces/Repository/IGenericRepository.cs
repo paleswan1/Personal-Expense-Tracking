@@ -12,7 +12,7 @@ public interface IGenericRepository : ITransientService
     
     TEntity? GetFirstOrDefault<TEntity>(Func<TEntity, bool> predicate) where TEntity : BaseEntity;
     
-    List<TEntity> GetAll<TEntity>() where TEntity : BaseEntity; 
+    List<TEntity> GetAll<TEntity>(Func<TEntity, bool>? predicate = null) where TEntity : BaseEntity; 
 
     Task Insert<TEntity>(TEntity entity, bool isCreatedByRequired = true) where TEntity : BaseEntity;
 

@@ -60,7 +60,7 @@ public class GenericRepository(ISerializeDeserializeManager serializeDeserialize
         }
     }
     
-    public List<TEntity> GetAll<TEntity>() where TEntity : BaseEntity
+    public List<TEntity> GetAll<TEntity>(Func<TEntity, bool>? predicate = null) where TEntity : BaseEntity
     {
         try
         {

@@ -2,11 +2,10 @@
 using Cashify.Domain.Common.Enum;
 using Cashify.Application.DTOs.Debts;
 using Cashify.Application.DTOs.Sources;
-using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.DTOs.Filters.Debts;
+using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Services;
 using Cashify.Application.Interfaces.Repository;
-using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
@@ -23,11 +22,9 @@ public class DebtService(IGenericRepository genericRepository,
             throw new Exception("You are not logged in.");
         }
         
-        var debts = genericRepository.GetAll<Debt>();
+        var pendingDebts = genericRepository.GetAll<Debt>(x => x.CreatedBy == userIdentifier && x.Status is not DebtStatus.Cleared);
 
-        var pendingDebts = debts.Where(x => x.CreatedBy == userIdentifier).ToList();
-
-        return pendingDebts.Where(x => x.Status is not DebtStatus.Cleared).Sum(x => x.Amount);
+        return pendingDebts.Sum(x => x.Amount);
     }
 
     /// <summary>
@@ -44,9 +41,7 @@ public class DebtService(IGenericRepository genericRepository,
             throw new Exception("You are not logged in.");
         }
         
-        var debts = genericRepository.GetAll<Debt>();
-
-        debts = debts.Where(x => x.CreatedBy == userIdentifier).ToList();
+        var debts = genericRepository.GetAll<Debt>(x => x.CreatedBy == userIdentifier);
 
         return new GetDebtsCountDto
         {
@@ -103,8 +98,6 @@ public class DebtService(IGenericRepository genericRepository,
     /// <exception cref="Exception">Thrown if the user is not logged in.</exception>
     public async Task<List<GetDebtDto>> GetAllDebts(GetDebtFilterRequestDto debtFilterRequest)
     {
-        var debts = genericRepository.GetAll<Debt>();
-        
         var userIdentifier = await userService.GetUserId();
 
         if (userIdentifier == Guid.Empty)
@@ -112,12 +105,11 @@ public class DebtService(IGenericRepository genericRepository,
             throw new Exception("You are not logged in.");
         }
 
-        debts = debts.Where(x => x.CreatedBy == userIdentifier).ToList();
-
-        if (!string.IsNullOrEmpty(debtFilterRequest.Search))
-        {
-            debts = debts.Where(x => x.Title.Contains(debtFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
+        var debts = genericRepository.GetAll<Debt>(x => 
+            x.CreatedBy == userIdentifier 
+            && (debtFilterRequest.StartDate == null || x.DueDate >= DateOnly.FromDateTime(debtFilterRequest.StartDate.Value))
+            && (debtFilterRequest.EndDate == null || x.DueDate <= DateOnly.FromDateTime(debtFilterRequest.EndDate.Value))
+            && (string.IsNullOrEmpty(debtFilterRequest.Search) || x.Title.Contains(debtFilterRequest.Search, StringComparison.OrdinalIgnoreCase)));
 
         if (debtFilterRequest.Status != null)
         {
@@ -134,16 +126,6 @@ public class DebtService(IGenericRepository genericRepository,
             };
         }
         
-        if (debtFilterRequest.StartDate != null)
-        {
-            debts = debts.Where(x => x.DueDate >= DateOnly.FromDateTime(debtFilterRequest.StartDate.Value)).ToList();
-        }
-
-        if (debtFilterRequest.EndDate != null)
-        {
-            debts = debts.Where(x => x.DueDate < DateOnly.FromDateTime(debtFilterRequest.EndDate.Value)).ToList();
-        }
-        
         if (!string.IsNullOrEmpty(debtFilterRequest.OrderBy))
         {
             debts = debtFilterRequest.OrderBy switch
@@ -155,23 +137,20 @@ public class DebtService(IGenericRepository genericRepository,
                 _ => debts
             };
         }
-        
-        var result = new List<GetDebtDto>();
 
-        foreach (var debt in debts)
-        {
-            var source = genericRepository.GetFirstOrDefault<DebtSource>(x => x.Id == debt.SourceId)
-                         ?? throw new Exception("A source with the following identifier couldn't be found.");
-            
-            var debtModel = new GetDebtDto
+        return (from debt in debts
+            let source = genericRepository.GetFirstOrDefault<DebtSource>(x => 
+                x.Id == debt.SourceId) 
+                         ?? throw new Exception("A source with the following identifier couldn't be found.")
+            select new GetDebtDto
             {
                 Id = debt.Id,
                 Title = debt.Title,
                 Source = new GetSourceDto
                 {
-                    Id = source.Id,
-                    Title = source.Title,
-                    BackgroundColor = source.BackgroundColor,
+                    Id = source.Id, 
+                    Title = source.Title, 
+                    BackgroundColor = source.BackgroundColor, 
                     TextColor = source.TextColor
                 },
                 Amount = debt.Amount,
@@ -182,12 +161,7 @@ public class DebtService(IGenericRepository genericRepository,
                         ? DebtStatus.Overdue
                         : DebtStatus.Pending
                     : DebtStatus.Cleared
-            };
-
-            result.Add(debtModel);
-        }
-
-        return result;
+            }).ToList();
     }
 
     /// <summary>
@@ -253,10 +227,6 @@ public class DebtService(IGenericRepository genericRepository,
     /// Marks a specified debt as cleared.
     /// </summary>
     /// <param name="debtId">The ID of the debt to be cleared</param>
-    /// <returns></returns>
-    /// <exception cref="Exception">
-    //// Thrown if the user is not logged in, the debt is already cleared, or there is insufficient balance to clear the debt. 
-    /// </exception>
     public async Task ClearDebt(Guid debtId)
     {
         var userIdentifier = await userService.GetUserId();

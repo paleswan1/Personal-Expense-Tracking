@@ -1,14 +1,12 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using ApexCharts;
-using Cashify.Domain.Models;
+﻿using Cashify.Domain.Models;
 using Cashify.Domain.Common.Enum;
+using Cashify.Domain.Common.Constants;
 using Cashify.Application.DTOs.Transactions;
+using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.Interfaces.Services;
+using Cashify.Application.Interfaces.Managers;
 using Cashify.Application.Interfaces.Repository;
 using Cashify.Application.DTOs.Filters.Transactions;
-using Cashify.Application.Interfaces.Managers;
-using Cashify.Domain.Common.Constants;
-using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
@@ -34,17 +32,13 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
         
-        var transactions = genericRepository.GetAll<Transaction>();
+        var transactions = genericRepository.GetAll<Transaction>(x => x.CreatedBy == userIdentifier);
 
-        transactions = transactions.Where(x => x.CreatedBy == userIdentifier).ToList();
-
-        var debts = genericRepository.GetAll<Debt>();
-
-        debts = debts.Where(x => x.CreatedBy == userIdentifier).ToList();
+        var clearedDebts = genericRepository.GetAll<Debt>(x => x.CreatedBy == userIdentifier && x.Status == DebtStatus.Cleared);
 
         return transactions.Where(x => x.Type == TransactionType.Inflow).Sum(x => x.Amount) -
                transactions.Where(x => x.Type == TransactionType.Outflow).Sum(x => x.Amount) -
-               debts.Where(x => x.Status == DebtStatus.Cleared).Sum(x => x.Amount);
+               clearedDebts.Sum(x => x.Amount);
     }
 
     /// <summary>
@@ -61,9 +55,7 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
         
-        var transactions = genericRepository.GetAll<Transaction>();
-
-        transactions = transactions.Where(x => x.CreatedBy == userIdentifier).ToList();
+        var transactions = genericRepository.GetAll<Transaction>(x => x.CreatedBy == userIdentifier);
 
         return new GetTransactionsCountDto
         {
@@ -90,11 +82,9 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("A transaction with the following identifier couldn't be found.");
         }
 
-        var transactionTags = genericRepository.GetAll<TransactionTags>();
+        var transactionTags = genericRepository.GetAll<TransactionTags>(x => x.TransactionId == transaction.Id);
 
-        transactionTags = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
-
-        var tags = transactionTags.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
+        var tags = transactionTags.Select(x => tagService.GetTagById(x.TagId)).ToList();
 
         return new GetTransactionDto
         {
@@ -117,7 +107,6 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
     /// <exception cref="Exception"></exception>
     public async Task<List<GetTransactionDto>> GetAllTransactions(GetTransactionFilterRequestDto transactionFilterRequest)
     {
-        var transactions = genericRepository.GetAll<Transaction>();
 
         var transactionTags = genericRepository.GetAll<TransactionTags>();
 
@@ -128,27 +117,11 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             throw new Exception("You are not logged in.");
         }
 
-        transactions = transactions.Where(x => x.CreatedBy == userIdentifier).ToList();
-
-        if (!string.IsNullOrEmpty(transactionFilterRequest.Search))
-        {
-            transactions = transactions.Where(x => x.Title.Contains(transactionFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        if (transactionFilterRequest.TransactionType != null)
-        {
-            transactions = transactions.Where(x => x.Type == transactionFilterRequest.TransactionType).ToList();
-        }
-        
-        if (transactionFilterRequest.StartDate != null)
-        {
-            transactions = transactions.Where(x => x.CreatedDate >= transactionFilterRequest.StartDate).ToList();
-        }
-
-        if (transactionFilterRequest.EndDate != null)
-        {
-            transactions = transactions.Where(x => x.CreatedDate <= transactionFilterRequest.EndDate).ToList();
-        }
+        var transactions = genericRepository.GetAll<Transaction>(x => x.CreatedBy == userIdentifier
+            && (string.IsNullOrEmpty(transactionFilterRequest.Search) || x.Title.Contains(transactionFilterRequest.Search, StringComparison.OrdinalIgnoreCase))
+            && (transactionFilterRequest.TransactionType == null || x.Type == transactionFilterRequest.TransactionType)
+            && (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate)
+            && (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate));
         
         if (!string.IsNullOrEmpty(transactionFilterRequest.OrderBy))
         {
@@ -160,32 +133,22 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
                 _ => transactions
             };
         }
-        
-        var result = new List<GetTransactionDto>();
 
-        foreach (var transaction in transactions)
-        {
-            var transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList();
-
-            if (transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Count == 0 || transactionFilterRequest.TagIds.Contains(tagId)))
+        return (from transaction in transactions
+            let transactionTagsModel = transactionTags.Where(x => x.TransactionId == transaction.Id).ToList()
+            where transactionTagsModel.Select(x => x.TagId).Any(tagId => transactionFilterRequest.TagIds.Count == 0 || transactionFilterRequest.TagIds.Contains(tagId))
+            let tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList()
+            select new GetTransactionDto
             {
-                var tags = transactionTagsModel.Select(transactionTag => tagService.GetTagById(transactionTag.TagId)).ToList();
-
-                result.Add(new GetTransactionDto
-                {
-                    Id = transaction.Id,
-                    Title = transaction.Title,
-                    Note = transaction.Note,
-                    Type = transaction.Type,
-                    Source = transaction.Source,
-                    Amount = transaction.Amount,
-                    Date = transaction.CreatedDate.ToString("dd.MM.yyyy hh:mm:ss tt"),
-                    Tags = tags
-                });
-            }
-        }
-
-        return result;
+                Id = transaction.Id,
+                Title = transaction.Title,
+                Note = transaction.Note,
+                Type = transaction.Type,
+                Source = transaction.Source,
+                Amount = transaction.Amount,
+                Date = transaction.CreatedDate.ToString("dd.MM.yyyy hh:mm:ss tt"),
+                Tags = tags
+            }).ToList();
     }
 
     /// <summary>
@@ -222,10 +185,6 @@ public class TransactionService(IGenericRepository genericRepository, IUserServi
             Source = transaction.Source,
             Amount = transaction.Amount
         };
-
-        var transactions = genericRepository.GetAll<Transaction>();
-
-        transactions.Add(transactionModel);
 
         await genericRepository.Insert(transactionModel);
 

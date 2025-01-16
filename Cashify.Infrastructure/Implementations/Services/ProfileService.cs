@@ -1,8 +1,8 @@
-﻿using Cashify.Application.DTOs.User;
-using Cashify.Application.Interfaces.Repository;
-using Cashify.Application.Interfaces.Services;
+﻿using Cashify.Domain.Models;
+using Cashify.Application.DTOs.User;
 using Cashify.Application.Interfaces.Utility;
-using Cashify.Domain.Models;
+using Cashify.Application.Interfaces.Services;
+using Cashify.Application.Interfaces.Repository;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 

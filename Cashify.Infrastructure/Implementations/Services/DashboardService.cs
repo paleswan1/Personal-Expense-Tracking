@@ -5,8 +5,8 @@ using Cashify.Application.DTOs.Dashboard;
 using Cashify.Application.Interfaces.Utility;
 using Cashify.Application.DTOs.Filters.Debts;
 using Cashify.Application.Interfaces.Services;
-using Cashify.Application.DTOs.Filters.Dashboard;
 using Cashify.Application.Interfaces.Repository;
+using Cashify.Application.DTOs.Filters.Dashboard;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
@@ -22,9 +22,9 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
             throw new Exception("You are not logged in.");
         }
 
-        var debts = genericRepository.GetAll<Debt>().Where(x => x.CreatedBy == userIdentifier).ToList();
+        var debts = genericRepository.GetAll<Debt>(x => x.CreatedBy == userIdentifier);
         
-        var transactions = genericRepository.GetAll<Transaction>().Where(x => x.CreatedBy == userIdentifier).ToList();
+        var transactions = genericRepository.GetAll<Transaction>(x => x.CreatedBy == userIdentifier);
         
         return new GetDashboardCount
         {
@@ -81,11 +81,10 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
             throw new Exception("You are not logged in.");
         }
         
-        var transactions = genericRepository.GetAll<Transaction>().Where(x => 
-            x.Type == TransactionType.Inflow && 
-            x.CreatedBy == userIdentifier && 
+        var transactions = genericRepository.GetAll<Transaction>(x => 
+            x.Type == TransactionType.Inflow && x.CreatedBy == userIdentifier && 
             (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
-            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();
+            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate));
 
         // Order transactions and return the result
         var result = transactionFilterRequest.IsAscending 
@@ -109,11 +108,10 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
             throw new Exception("You are not logged in.");
         }
         
-        var transactions = genericRepository.GetAll<Transaction>().Where(x => 
-            x.Type == TransactionType.Outflow 
-            && x.CreatedBy == userIdentifier && 
+        var transactions = genericRepository.GetAll<Transaction>(x => 
+            x.Type == TransactionType.Outflow && x.CreatedBy == userIdentifier && 
             (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
-            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();
+            (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate));
 
         var result = transactionFilterRequest.IsAscending 
             ? transactions.OrderBy(x => x.Amount).Take(transactionFilterRequest.Count).ToList() 
@@ -136,7 +134,7 @@ public class DashboardService(IGenericRepository genericRepository, IDebtService
             throw new Exception("You are not logged in.");
         }
         
-        var debts = genericRepository.GetAll<Debt>().Where(x => 
+        var debts = genericRepository.GetAll<Debt>(x => 
             x.CreatedBy == userIdentifier && 
             (transactionFilterRequest.StartDate == null || x.CreatedDate >= transactionFilterRequest.StartDate) && 
             (transactionFilterRequest.EndDate == null || x.CreatedDate <= transactionFilterRequest.EndDate)).ToList();

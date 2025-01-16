@@ -1,12 +1,12 @@
 ﻿using System.Text;
-using System.Security.Claims;
 using Cashify.Domain.Models;
+using System.Security.Claims;
+using Cashify.Application.Utility;
+using Cashify.Application.Settings;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Cashify.Application.Utility;
-using Microsoft.Extensions.Configuration;
-using Cashify.Application.Settings;
 using Cashify.Domain.Common.Constants;
+using Microsoft.Extensions.Configuration;
 using Cashify.Application.DTOs.Authentication;
 using Cashify.Application.Interfaces.Managers;
 using Cashify.Application.Interfaces.Services;
@@ -42,17 +42,15 @@ public class AuthenticationService(IGenericRepository genericRepository, ILocalS
     // Logs in a user by validating credentials and generating JWT
     public async Task Login(LoginRequestDto loginRequest)
     {
-        var user = genericRepository.GetFirstOrDefault<User>(x => x.Username == loginRequest.Username);
-
-        if (user == null) throw new Exception("A user with the following username does not exist, please try again :)");
+        var user = genericRepository.GetFirstOrDefault<User>(x => x.Username == loginRequest.Username)
+            ?? throw new Exception("A user with the following username does not exist, please try again :)");
         
         var isPasswordValid = loginRequest.Password.Verify(user.Password);
         
         if (!isPasswordValid) throw new Exception("The provided password is incorrect, please try again :)");
         
-        var jsonTokenSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>();
-
-        if (jsonTokenSettings == null) throw new Exception("JWT Settings are missing in the configuration.");
+        var jsonTokenSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>()
+            ?? throw new Exception("JWT Settings are missing in the configuration.");
 
         // Define authentication claims for the JWT
         var authClaims = new List<Claim>

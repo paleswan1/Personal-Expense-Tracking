@@ -2,10 +2,9 @@
 using Cashify.Application.Utility;
 using Cashify.Application.DTOs.Tags;
 using Cashify.Application.DTOs.Filters.Tags;
-using Cashify.Application.Interfaces.Repository;
-using Cashify.Application.Interfaces.Services;
 using Cashify.Application.Interfaces.Utility;
-using IUserService = Cashify.Application.Interfaces.Utility.IUserService;
+using Cashify.Application.Interfaces.Services;
+using Cashify.Application.Interfaces.Repository;
 
 namespace Cashify.Infrastructure.Implementations.Services;
 
@@ -47,7 +46,6 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
     /// <exception cref="Exception"></exception>
     public async Task<List<GetTagDto>> GetAllTags(GetTagFilterRequestDto tagFilterRequest)
     {
-        var tags = genericRepository.GetAll<Tag>();
         
         var userIdentifier = await userService.GetUserId();
 
@@ -56,12 +54,8 @@ public class TagService(IGenericRepository genericRepository, IUserService userS
             throw new Exception("You are not logged in.");
         }
         
-        tags = tags.Where(x => x.IsDefault || x.CreatedBy == userIdentifier).ToList();
-
-        if (!string.IsNullOrEmpty(tagFilterRequest.Search))
-        {
-            tags = tags.Where(x => x.Title.Contains(tagFilterRequest.Search, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
+        var tags = genericRepository.GetAll<Tag>(x => x.IsDefault || x.CreatedBy == userIdentifier 
+            && (string.IsNullOrEmpty(tagFilterRequest.Search) || x.Title.Contains(tagFilterRequest.Search, StringComparison.OrdinalIgnoreCase)));
         
         if (!string.IsNullOrEmpty(tagFilterRequest.OrderBy))
         {
